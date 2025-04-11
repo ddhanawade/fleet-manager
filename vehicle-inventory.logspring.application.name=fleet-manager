@@ -1,0 +1,179 @@
+2025-04-11T14:51:10.599+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T14:51:10.599+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T14:51:10.601+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T14:51:10.603+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T14:51:10.603+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T14:51:10.603+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T14:51:10.605+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T14:51:10.605+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T14:51:10.606+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T14:51:10.606+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T14:51:10.606+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T14:51:10.606+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:27:11.223+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : OPTIONS "/api/vehicles", parameters={}
+2025-04-11T15:27:11.225+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#createVehicle(Vehicle)
+2025-04-11T15:27:11.227+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:27:11.228+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/api/vehicles", parameters={}
+2025-04-11T15:27:11.228+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#createVehicle(Vehicle)
+2025-04-11T15:27:11.229+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [Vehicle{id=null, make='Tata', model='Punch', vehicleYear=Fri Apr 11 05:30:00 IST 2025, city='Hydraba (truncated)...]
+2025-04-11T15:27:11.230+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : insert into vehicle (city,make,model,vehicle_year,id) values (?,?,?,?,default)
+2025-04-11T15:27:11.231+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:27:11.231+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [Vehicle{id=10, make='Tata', model='Punch', vehicleYear=Fri Apr 11 05:30:00 IST 2025, city='Hydrabad' (truncated)...]
+2025-04-11T15:27:11.232+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:27:11.234+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:27:11.234+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:27:11.236+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:27:11.237+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:27:11.237+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:27:11.238+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:33:06.734+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:33:06.734+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:33:06.736+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:33:06.737+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:33:06.738+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:33:06.739+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:33:07.604+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:33:07.605+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:33:07.607+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:33:07.608+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:33:07.609+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:33:07.610+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:33:07.611+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:33:07.611+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:33:07.612+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:33:07.613+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:33:07.613+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:33:07.613+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:39:47.164+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:39:47.164+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:39:47.169+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:39:47.171+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:39:47.171+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:39:47.172+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:39:47.173+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:39:47.173+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:39:47.173+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:39:47.174+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:39:47.174+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:39:47.174+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:49:01.542+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:49:01.542+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:49:01.544+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:49:01.545+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:49:01.545+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:49:01.546+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:49:01.547+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:49:01.548+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:49:01.549+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:49:01.549+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:49:01.549+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:49:01.550+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:49:05.078+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:49:05.079+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:49:05.081+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:49:05.082+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:49:05.082+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:49:05.083+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:49:07.170+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:49:07.170+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:49:07.172+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:49:07.173+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:49:07.173+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:49:07.174+05:30 DEBUG 11391 --- [http-nio-8080-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T15:49:07.176+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T15:49:07.176+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T15:49:07.177+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T15:49:07.178+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T15:49:07.178+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T15:49:07.178+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:24:14.949+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:24:14.950+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:24:14.953+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:24:14.955+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:24:14.955+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:24:14.956+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:24:14.957+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:24:14.957+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:24:14.958+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:24:14.958+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:24:14.958+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:24:14.958+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:28:06.731+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:28:06.731+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:28:06.733+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:28:06.734+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:28:06.734+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:28:06.735+05:30 DEBUG 11391 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:28:06.736+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:28:06.736+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:28:06.737+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:28:06.738+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:28:06.738+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:28:06.738+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:29:22.420+05:30 DEBUG 11391 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : OPTIONS "/api/vehicles", parameters={}
+2025-04-11T19:29:22.420+05:30 DEBUG 11391 --- [http-nio-8080-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#createVehicle(Vehicle)
+2025-04-11T19:29:22.421+05:30 DEBUG 11391 --- [http-nio-8080-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:29:22.423+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : POST "/api/vehicles", parameters={}
+2025-04-11T19:29:22.423+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#createVehicle(Vehicle)
+2025-04-11T19:29:22.424+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [Vehicle{id=null, make='Maruti', model='Ertiga', vehicleYear=Wed Apr 23 05:30:00 IST 2025, city='Bang (truncated)...]
+2025-04-11T19:29:22.425+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : insert into vehicle (city,make,model,vehicle_year,id) values (?,?,?,?,default)
+2025-04-11T19:29:22.426+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:29:22.426+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [Vehicle{id=11, make='Maruti', model='Ertiga', vehicleYear=Wed Apr 23 05:30:00 IST 2025, city='Banglo (truncated)...]
+2025-04-11T19:29:22.427+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:29:22.429+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:29:22.430+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:29:22.431+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:29:22.432+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:29:22.432+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:29:22.432+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:30:49.650+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : POST "/api/vehicles", parameters={}
+2025-04-11T19:30:49.650+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#createVehicle(Vehicle)
+2025-04-11T19:30:49.651+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [Vehicle{id=null, make='Maruti', model='Ertiga', vehicleYear=Wed Apr 23 05:30:00 IST 2025, city='Mumb (truncated)...]
+2025-04-11T19:30:49.652+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : insert into vehicle (city,make,model,vehicle_year,id) values (?,?,?,?,default)
+2025-04-11T19:30:49.653+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:30:49.653+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [Vehicle{id=12, make='Maruti', model='Ertiga', vehicleYear=Wed Apr 23 05:30:00 IST 2025, city='Mumbai (truncated)...]
+2025-04-11T19:30:49.654+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:30:49.656+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:30:49.656+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:30:49.658+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:30:49.658+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:30:49.658+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:30:49.659+05:30 DEBUG 11391 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:32:27.915+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:32:27.916+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:32:27.918+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:32:27.920+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:32:27.920+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:32:27.921+05:30 DEBUG 11391 --- [http-nio-8080-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:32:27.922+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:32:27.922+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:32:27.923+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:32:27.923+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:32:27.924+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:32:27.924+05:30 DEBUG 11391 --- [http-nio-8080-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:33:52.062+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : POST "/api/vehicles", parameters={}
+2025-04-11T19:33:52.063+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#createVehicle(Vehicle)
+2025-04-11T19:33:52.065+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [Vehicle{id=null, make='Maruti', model='Baleno', vehicleYear=Wed Apr 02 05:30:00 IST 2025, city='Mumb (truncated)...]
+2025-04-11T19:33:52.067+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : insert into vehicle (city,make,model,vehicle_year,id) values (?,?,?,?,default)
+2025-04-11T19:33:52.069+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:33:52.069+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] m.m.a.RequestResponseBodyMethodProcessor : Writing [Vehicle{id=13, make='Maruti', model='Baleno', vehicleYear=Wed Apr 02 05:30:00 IST 2025, city='Mumbai (truncated)...]
+2025-04-11T19:33:52.070+05:30 DEBUG 11391 --- [http-nio-8080-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:33:52.073+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:33:52.073+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:33:52.075+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:33:52.076+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:33:52.076+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:33:52.077+05:30 DEBUG 11391 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:34:20.284+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/api/vehicles", parameters={}
+2025-04-11T19:34:20.285+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#createVehicle(Vehicle)
+2025-04-11T19:34:20.287+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [Vehicle{id=null, make='Maruti', model='Swift', vehicleYear=Sat Apr 05 05:30:00 IST 2025, city='Mumba (truncated)...]
+2025-04-11T19:34:20.289+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : insert into vehicle (city,make,model,vehicle_year,id) values (?,?,?,?,default)
+2025-04-11T19:34:20.291+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:34:20.291+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] m.m.a.RequestResponseBodyMethodProcessor : Writing [Vehicle{id=14, make='Maruti', model='Swift', vehicleYear=Sat Apr 05 05:30:00 IST 2025, city='Mumbai' (truncated)...]
+2025-04-11T19:34:20.292+05:30 DEBUG 11391 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-04-11T19:34:20.295+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/api/vehicles", parameters={}
+2025-04-11T19:34:20.296+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.inventory.fleet_manager.controller.VehicleController#getAllVehicles()
+2025-04-11T19:34:20.297+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : select v1_0.id,v1_0.city,v1_0.make,v1_0.model,v1_0.vehicle_year from vehicle v1_0
+2025-04-11T19:34:20.298+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [application/json, text/plain, */*] and supported [application/json, application/*+json]
+2025-04-11T19:34:20.298+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] m.m.a.RequestResponseBodyMethodProcessor : Writing [[Vehicle{id=1, make='Toyota', model='Camry', vehicleYear=2025-04-11 05:30:00.0, city='Mumbai'}, Vehi (truncated)...]
+2025-04-11T19:34:20.299+05:30 DEBUG 11391 --- [http-nio-8080-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
