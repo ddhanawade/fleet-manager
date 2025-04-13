@@ -11,16 +11,22 @@ public class Vehicle {
     private Long id;
     private String make;
     private String model;
-    private Date vehicleYear;
+    private String grade;
+    private String fuelType;
+    private String exteriorColor;
+    private String interiorColor;
+    private String chassisNumber;
+    private String engineNumber;
+    private Integer keyNumber;
+    private String location;
+    private String status;
+    private Date receivedDate;
 
     // Many-to-one relationship with City
 //    @ManyToOne
 //    @JoinColumn(name = "city_id")
 //    private City city;
 
-    private  String city;
-
-    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -46,20 +52,84 @@ public class Vehicle {
         this.model = model;
     }
 
-    public Date getVehicleYear() {
-        return vehicleYear;
+    public String getGrade() {
+        return grade;
     }
 
-    public void setVehicleYear(Date vehicleYear) {
-        this.vehicleYear = vehicleYear;
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 
-    public String getCity() {
-        return city;
+    public String getFuelType() {
+        return fuelType;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setFuelType(String fuelType) {
+        this.fuelType = fuelType;
+    }
+
+    public String getExteriorColor() {
+        return exteriorColor;
+    }
+
+    public void setExteriorColor(String exteriorColor) {
+        this.exteriorColor = exteriorColor;
+    }
+
+    public String getInteriorColor() {
+        return interiorColor;
+    }
+
+    public void setInteriorColor(String interiorColor) {
+        this.interiorColor = interiorColor;
+    }
+
+    public String getChassisNumber() {
+        return chassisNumber;
+    }
+
+    public void setChassisNumber(String chassisNumber) {
+        this.chassisNumber = chassisNumber;
+    }
+
+    public String getEngineNumber() {
+        return engineNumber;
+    }
+
+    public void setEngineNumber(String engineNumber) {
+        this.engineNumber = engineNumber;
+    }
+
+    public Integer getKeyNumber() {
+        return keyNumber;
+    }
+
+    public void setKeyNumber(Integer keyNumber) {
+        this.keyNumber = keyNumber;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(Date receivedDate) {
+        this.receivedDate = receivedDate;
     }
 
     @Override
@@ -68,8 +138,16 @@ public class Vehicle {
                 "id=" + id +
                 ", make='" + make + '\'' +
                 ", model='" + model + '\'' +
-                ", vehicleYear=" + vehicleYear +
-                ", city='" + city + '\'' +
+                ", grade='" + grade + '\'' +
+                ", fuelType='" + fuelType + '\'' +
+                ", exteriorColor='" + exteriorColor + '\'' +
+                ", interiorColor='" + interiorColor + '\'' +
+                ", chassisNumber='" + chassisNumber + '\'' +
+                ", engineNumber='" + engineNumber + '\'' +
+                ", keyNumber=" + keyNumber +
+                ", location='" + location + '\'' +
+                ", status='" + status + '\'' +
+                ", receivedDate=" + receivedDate +
                 '}';
     }
 }
