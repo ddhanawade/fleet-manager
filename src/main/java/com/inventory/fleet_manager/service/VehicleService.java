@@ -1,5 +1,7 @@
 package com.inventory.fleet_manager.service;
 
+import com.inventory.fleet_manager.dto.VehicleDTO;
+import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
@@ -20,26 +22,36 @@ public class VehicleService {
         return vehicleRepository.findAll();
     }
 
-    public Vehicle saveVehicle(Vehicle vehicle) {
+    public Vehicle getVehicleById(Long id) throws VehicleNotFoundException {
+        return vehicleRepository.findById(id)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with id: " + id));
+    }
+
+    public Vehicle createVehicle(Vehicle vehicle) {
         return vehicleRepository.save(vehicle);
     }
 
-    public Vehicle getVehicleById(Long id) {
-        return vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Vehicle not found"));
+    public Vehicle updateVehicle(Long id, Vehicle vehicle) throws VehicleNotFoundException {
+        Vehicle existingVehicle = getVehicleById(id);
+        existingVehicle.setMake(vehicle.getMake());
+        existingVehicle.setModel(vehicle.getModel());
+        existingVehicle.setGrade(vehicle.getGrade());
+        existingVehicle.setFuelType(vehicle.getFuelType());
+        existingVehicle.setExteriorColor(vehicle.getExteriorColor());
+        existingVehicle.setInteriorColor(vehicle.getInteriorColor());
+        existingVehicle.setChassisNumber(vehicle.getChassisNumber());
+        existingVehicle.setEngineNumber(vehicle.getEngineNumber());
+        existingVehicle.setKeyNumber(vehicle.getKeyNumber());
+        existingVehicle.setLocation(vehicle.getLocation());
+        existingVehicle.setStatus(vehicle.getStatus());
+        existingVehicle.setReceivedDate(vehicle.getReceivedDate());
+        return vehicleRepository.save(existingVehicle);
     }
 
-    public Vehicle updateVehicle(Long id, Vehicle vehicle) {
-        Optional<Vehicle> existingVehicle = vehicleRepository.findById(id);
-        if (existingVehicle.isPresent()) {
-            vehicle.setId(id);
-            return vehicleRepository.save(vehicle);
-        } else {
-            throw new RuntimeException("Vehicle not found");
+    public void deleteVehicle(Long id) throws VehicleNotFoundException {
+        if (!vehicleRepository.existsById(id)) {
+            throw new VehicleNotFoundException("Vehicle not found with id: " + id);
         }
-    }
-
-    public void deleteVehicle(Long id) {
         vehicleRepository.deleteById(id);
     }
-
 }
