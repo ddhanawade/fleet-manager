@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehicles")
+//@CrossOrigin(origins = "http://fleet-manager-client.s3-website.us-east-2.amazonaws.com")
 @CrossOrigin(origins = "http://localhost:4200")
 public class VehicleController {
     private final VehicleService vehicleService;
@@ -57,6 +58,9 @@ public class VehicleController {
         dto.setInteriorColor(vehicle.getInteriorColor());
         dto.setLocation(vehicle.getLocation());
         dto.setStatus(vehicle.getStatus());
+        dto.setChassisNumber(vehicle.getChassisNumber());
+        dto.setEngineNumber(vehicle.getEngineNumber());
+        dto.setKeyNumber(vehicle.getKeyNumber());
         dto.setReceivedDate(vehicle.getReceivedDate());
         return dto;
     }
@@ -71,6 +75,9 @@ public class VehicleController {
         vehicle.setInteriorColor(dto.getInteriorColor());
         vehicle.setLocation(dto.getLocation());
         vehicle.setStatus(dto.getStatus());
+        vehicle.setChassisNumber(dto.getChassisNumber());
+        vehicle.setEngineNumber(dto.getEngineNumber());
+        vehicle.setKeyNumber(dto.getKeyNumber());
         vehicle.setReceivedDate(dto.getReceivedDate());
         return vehicle;
     }

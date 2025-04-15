@@ -10,6 +10,9 @@ public class VehicleDTO {
     private String exteriorColor;
     private String interiorColor;
     private String location;
+    private String chassisNumber;
+    private String engineNumber;
+    private Integer keyNumber;
     private String status;
     private Date receivedDate;
 
@@ -69,6 +72,30 @@ public class VehicleDTO {
         this.location = location;
     }
 
+    public String getChassisNumber() {
+        return chassisNumber;
+    }
+
+    public void setChassisNumber(String chassisNumber) {
+        this.chassisNumber = chassisNumber;
+    }
+
+    public String getEngineNumber() {
+        return engineNumber;
+    }
+
+    public void setEngineNumber(String engineNumber) {
+        this.engineNumber = engineNumber;
+    }
+
+    public Integer getKeyNumber() {
+        return keyNumber;
+    }
+
+    public void setKeyNumber(Integer keyNumber) {
+        this.keyNumber = keyNumber;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -95,6 +122,9 @@ public class VehicleDTO {
                 ", exteriorColor='" + exteriorColor + '\'' +
                 ", interiorColor='" + interiorColor + '\'' +
                 ", location='" + location + '\'' +
+                ", chassisNumber='" + chassisNumber + '\'' +
+                ", engineNumber='" + engineNumber + '\'' +
+                ", keyNumber=" + keyNumber +
                 ", status='" + status + '\'' +
                 ", receivedDate=" + receivedDate +
                 '}';
