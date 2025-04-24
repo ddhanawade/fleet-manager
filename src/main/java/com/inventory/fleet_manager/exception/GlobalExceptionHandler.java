@@ -10,7 +10,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(VehicleNotFoundException.class)
     public ResponseEntity<String> handleVehicleNotFoundException(VehicleNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        String response = """
+        {
+            "status": 404,
+            "error": "Not Found",
+            "message": "%s"
+        }
+        """.formatted(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request: " + ex.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)

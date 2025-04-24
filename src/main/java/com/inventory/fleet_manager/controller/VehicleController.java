@@ -27,7 +27,8 @@ public class VehicleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) throws VehicleNotFoundException {
-        return ResponseEntity.ok(vehicleService.getVehicleById(id));
+        Vehicle vehicle = vehicleService.getVehicleById(id);
+        return ResponseEntity.ok(vehicle);
     }
 
     @PostMapping

@@ -23,8 +23,11 @@ public class VehicleService {
     }
 
     public Vehicle getVehicleById(Long id) throws VehicleNotFoundException {
-        return vehicleRepository.findById(id)
-                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with id: " + id));
+        Optional<Vehicle> vehicle = vehicleRepository.findById(id);
+        if (vehicle.isEmpty()) {
+            throw new VehicleNotFoundException("Vehicle not found with id: " + id);
+        }
+        return vehicle.get();
     }
 
     public Vehicle createVehicle(Vehicle vehicle) {
@@ -49,7 +52,7 @@ public class VehicleService {
     }
 
     public void deleteVehicle(Long id) throws VehicleNotFoundException {
-        if (!vehicleRepository.existsById(id)) {
+        if (vehicleRepository.findById(id).isEmpty()) {
             throw new VehicleNotFoundException("Vehicle not found with id: " + id);
         }
         vehicleRepository.deleteById(id);
