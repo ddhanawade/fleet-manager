@@ -2,8 +2,10 @@ package com.inventory.fleet_manager.controller;
 
 import com.inventory.fleet_manager.dto.VehicleDTO;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;
+import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.service.VehicleService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,31 +18,32 @@ import java.util.List;
 public class VehicleController {
     private final VehicleService vehicleService;
 
-    public VehicleController(VehicleService vehicleService) {
+    public VehicleController(VehicleService vehicleService, VehicleMapper vehicleMapper) {
         this.vehicleService = vehicleService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Vehicle>> getAllVehicles() {
-        return ResponseEntity.ok(vehicleService.getAllVehicles());
+    public ResponseEntity<List<VehicleDTO>> getAllVehicles() {
+        List<VehicleDTO> vehiclesList = vehicleService.getAllVehicles();
+        return new ResponseEntity<>(vehiclesList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) throws VehicleNotFoundException {
-        Vehicle vehicle = vehicleService.getVehicleById(id);
-        return ResponseEntity.ok(vehicle);
+    public ResponseEntity<VehicleDTO> getVehicleById(@PathVariable Long id) throws VehicleNotFoundException {
+        VehicleDTO vehicle = vehicleService.getVehicleById(id);
+        return new ResponseEntity<>(vehicle, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<VehicleDTO> createVehicle(@RequestBody VehicleDTO vehicleDTO) {
-        Vehicle vehicle = vehicleService.createVehicle(convertToEntity(vehicleDTO));
-        return ResponseEntity.ok(convertToDTO(vehicle));
+        VehicleDTO vehicle = vehicleService.createVehicle(vehicleDTO);
+        return new ResponseEntity<>(vehicle, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<VehicleDTO> updateVehicle(@PathVariable Long id, @RequestBody VehicleDTO vehicleDTO) throws VehicleNotFoundException {
-        Vehicle updatedVehicle = vehicleService.updateVehicle(id, convertToEntity(vehicleDTO));
-        return ResponseEntity.ok(convertToDTO(updatedVehicle));
+        VehicleDTO updatedVehicle = vehicleService.updateVehicle(id, vehicleDTO);
+        return new ResponseEntity<>(updatedVehicle, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -49,37 +52,4 @@ public class VehicleController {
         return ResponseEntity.noContent().build();
     }
 
-    private VehicleDTO convertToDTO(Vehicle vehicle) {
-        VehicleDTO dto = new VehicleDTO();
-        dto.setMake(vehicle.getMake());
-        dto.setModel(vehicle.getModel());
-        dto.setGrade(vehicle.getGrade());
-        dto.setFuelType(vehicle.getFuelType());
-        dto.setExteriorColor(vehicle.getExteriorColor());
-        dto.setInteriorColor(vehicle.getInteriorColor());
-        dto.setLocation(vehicle.getLocation());
-        dto.setStatus(vehicle.getStatus());
-        dto.setChassisNumber(vehicle.getChassisNumber());
-        dto.setEngineNumber(vehicle.getEngineNumber());
-        dto.setKeyNumber(vehicle.getKeyNumber());
-        dto.setReceivedDate(vehicle.getReceivedDate());
-        return dto;
-    }
-
-    private Vehicle convertToEntity(VehicleDTO dto) {
-        Vehicle vehicle = new Vehicle();
-        vehicle.setMake(dto.getMake());
-        vehicle.setModel(dto.getModel());
-        vehicle.setGrade(dto.getGrade());
-        vehicle.setFuelType(dto.getFuelType());
-        vehicle.setExteriorColor(dto.getExteriorColor());
-        vehicle.setInteriorColor(dto.getInteriorColor());
-        vehicle.setLocation(dto.getLocation());
-        vehicle.setStatus(dto.getStatus());
-        vehicle.setChassisNumber(dto.getChassisNumber());
-        vehicle.setEngineNumber(dto.getEngineNumber());
-        vehicle.setKeyNumber(dto.getKeyNumber());
-        vehicle.setReceivedDate(dto.getReceivedDate());
-        return vehicle;
-    }
 }
