@@ -43,4 +43,21 @@ class VehicleControllerTest {
         assertEquals(vehiclesList, response.getBody());
         verify(vehicleService, times(1)).getAllVehicles();
     }
+
+    @Test
+    public void testGetVehicleById(){
+        // Arrange
+      VehicleDTO dto =  new VehicleDTO(1L, "Toyota", "Camry", null, null, null, null, null, null, null, null, null, null);
+
+      when(vehicleService.getVehicleById(1L)).thenReturn(dto);
+
+        // Act
+        ResponseEntity<VehicleDTO> response = vehicleController.getVehicleById(1L);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(dto, response.getBody());
+        verify(vehicleService, times(1)).getVehicleById(1L);
+    }
+
 }
