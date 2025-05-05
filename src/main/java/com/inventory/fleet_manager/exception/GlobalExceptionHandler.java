@@ -29,4 +29,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String>handleGlobalException(Exception ex) {
+        String response = """
+        {
+            "status": 500,
+            "error": "Internal Server Error",
+            "message": "%s"
+        }
+        """.formatted(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
 }
