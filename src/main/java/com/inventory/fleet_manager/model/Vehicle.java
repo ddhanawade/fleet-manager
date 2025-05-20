@@ -23,9 +23,16 @@ public class Vehicle {
     private String interiorColor;
     private String chassisNumber;
     private String engineNumber;
-    private Integer keyNumber;
+    private String keyNumber;
     private String location;
     private String status;
     private Date receivedDate;
-
+    private String invoiceDate;
+    private String invoiceNumber;
+    private String purchaseDealer;
+    private String manufactureDate;
+    private String suffix;
+    private String tkmInvoiceValue;
+    private  Integer age;
+    private String interest;
 }

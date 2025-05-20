@@ -28,6 +28,12 @@ public class VehicleController {
         return new ResponseEntity<>(vehiclesList, HttpStatus.OK);
     }
 
+    @GetMapping("/getUniqueVehicles")
+    public ResponseEntity<List<VehicleDTO>> getAllUniqueVehicles() {
+        List<VehicleDTO> vehiclesList = vehicleService.getAllUniqueVehicles();
+        return new ResponseEntity<>(vehiclesList, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<VehicleDTO> getVehicleById(@PathVariable Long id) throws VehicleNotFoundException {
         VehicleDTO vehicle = vehicleService.getVehicleById(id);

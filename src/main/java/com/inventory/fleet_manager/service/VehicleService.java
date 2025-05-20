@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,5 +105,18 @@ public class VehicleService {
             throw new VehicleNotFoundException("Vehicle not found with id: " + id);
         }
         vehicleRepository.deleteById(id);
+    }
+
+    public List<VehicleDTO> getAllUniqueVehicles() {
+        List<Vehicle> vehicles = vehicleRepository.findAll();
+        return vehicles.stream()
+                .map(vehicleMapper::toDTO)
+                .filter(distinctByKey(VehicleDTO::getModel)) // Unique by model
+                .collect(Collectors.toList());
+    }
+
+    private <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 }
