@@ -46,31 +46,31 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found with id: " + id));
 
-        if (orderDTO.getLeadName() != null) {
+        if (orderDTO.getLeadName() != null && !orderDTO.getLeadName().isBlank()) {
             order.setLeadName(orderDTO.getLeadName());
         }
-        if (orderDTO.getCustomerName() != null) {
+        if (orderDTO.getCustomerName() != null && !orderDTO.getCustomerName().isBlank()) {
             order.setCustomerName(orderDTO.getCustomerName());
         }
-        if (orderDTO.getFinancerName() != null) {
+        if (orderDTO.getFinancerName() != null && !orderDTO.getFinancerName().isBlank()) {
             order.setFinancerName(orderDTO.getFinancerName());
         }
-        if (orderDTO.getFinanceType() != null) {
+        if (orderDTO.getFinanceType() != null && !orderDTO.getFinanceType().isBlank()) {
             order.setFinanceType(orderDTO.getFinanceType());
         }
-        if (orderDTO.getPhoneNumber() != null) {
+        if (orderDTO.getPhoneNumber() != null ) {
             order.setPhoneNumber(orderDTO.getPhoneNumber());
         }
-        if (orderDTO.getSalesPersonName() != null) {
+        if (orderDTO.getSalesPersonName() != null && !orderDTO.getSalesPersonName().isBlank()) {
             order.setSalesPersonName(orderDTO.getSalesPersonName());
         }
-        if (orderDTO.getRemarks() != null) {
+        if (orderDTO.getRemarks() != null && !orderDTO.getRemarks().isBlank()) {
             order.setRemarks(orderDTO.getRemarks());
         }
-        if (orderDTO.getStatus() != null) {
+        if (orderDTO.getStatus() != null && !orderDTO.getStatus().isBlank()) {
             order.setStatus(orderDTO.getStatus());
         }
-        if (orderDTO.getDeliveryDate() != null) {
+        if (orderDTO.getDeliveryDate() != null ) {
             order.setDeliveryDate(orderDTO.getDeliveryDate());
         }
         order.setOrderId(id);
