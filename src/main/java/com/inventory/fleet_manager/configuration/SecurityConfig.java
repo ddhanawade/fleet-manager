@@ -36,7 +36,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow all endpoints
-                        .allowedOrigins("http://localhost:4200") // Allow Angular frontend
+                        .allowedOrigins("http://localhost:4200", "http://inventory-management-client.s3-website.us-east-2.amazonaws.com") // Allow Angular frontend
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow specific HTTP methods
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true); // Allow cookies or credentials
