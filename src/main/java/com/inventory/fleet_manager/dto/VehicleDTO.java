@@ -12,9 +12,11 @@ import java.util.Date;
 @NoArgsConstructor
 public class VehicleDTO {
     private Long id;
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yy")
     private String invoiceDate;
     private String invoiceNumber;
     private String purchaseDealer;
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yy")
     private Date receivedDate;
     private String manufactureDate;
     private String model;
