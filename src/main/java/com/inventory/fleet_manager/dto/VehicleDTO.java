@@ -16,8 +16,10 @@ public class VehicleDTO {
     private String invoiceDate;
     private String invoiceNumber;
     private String purchaseDealer;
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yy")
+
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yy")
     private Date receivedDate;
+   // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yy")
     private String manufactureDate;
     private String model;
     private String grade;

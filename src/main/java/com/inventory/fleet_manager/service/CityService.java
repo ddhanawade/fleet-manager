@@ -7,6 +7,8 @@ import com.inventory.fleet_manager.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CityService {
 
@@ -16,10 +18,7 @@ public class CityService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-//    public City saveCityWithVehicles(City city) {
-//        for (Vehicle vehicle : city.getVehicles()) {
-//            vehicle.setCity(city);
-//        }
-//        return cityRepository.save(city);
-//    }
+    public List<City> getAllCities() {
+        return cityRepository.findAll();
+    }
 }
