@@ -18,7 +18,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF
                 .cors(cors -> {}) // Enable CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/vehicles/**", "/api/orders/**").permitAll() // Allow public access to /api/vehicles
+                        .requestMatchers("/api/vehicles/**", "/api/orders/**", "/api/analytics/**").permitAll() // Allow public access to /api/vehicles
                         .anyRequest().authenticated() // Require authentication for all other requests
                 );
         return http.build();
