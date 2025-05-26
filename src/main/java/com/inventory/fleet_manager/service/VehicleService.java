@@ -5,9 +5,11 @@ import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.repository.VehicleRepository;
+import com.inventory.fleet_manager.utility.VehicleUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,15 +24,29 @@ public class VehicleService {
 
     private final VehicleMapper vehicleMapper;
 
-    public VehicleService(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper) {
+
+    public VehicleService(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper, VehicleUtils vehicleUtils) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleMapper = vehicleMapper;
     }
 
     public List<VehicleDTO> getAllVehicles() {
         List<Vehicle> vehicles = vehicleRepository.findAll();
-        List<VehicleDTO> vehicleDTOList =  vehicles.stream().map(vehicleMapper::toDTO).collect(Collectors.toList());
-        return vehicleDTOList;
+        return vehicles.stream()
+                .map(vehicle -> {
+                    VehicleDTO dto = vehicleMapper.toDTO(vehicle);
+
+                    // Calculate and set age
+                    Integer ageString = (VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())));
+                    dto.setAge(ageString);
+
+                    // Calculate and set interest
+//                    String interest = VehicleUtils.calculateInterest(vehicle.getInvoiceValue(), dto.getAge());
+//                    dto.setInterest(interest.equals("Invalid input") ? null : interest);
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     public VehicleDTO getVehicleById(Long id) throws VehicleNotFoundException {
@@ -107,16 +123,65 @@ public class VehicleService {
         vehicleRepository.deleteById(id);
     }
 
-    public List<VehicleDTO> getAllUniqueVehicles() {
+    public Map<String, Map<String, Long>> getAgeCountByModel() {
         List<Vehicle> vehicles = vehicleRepository.findAll();
+
         return vehicles.stream()
-                .map(vehicleMapper::toDTO)
-                .filter(distinctByKey(VehicleDTO::getModel)) // Unique by model
-                .collect(Collectors.toList());
+                .collect(Collectors.groupingBy(
+                        Vehicle::getModel, // Group by model
+                        Collectors.groupingBy(vehicle -> {
+                            Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate()));
+                            if (age == null) {
+                                return "Unknown";
+                            } else if (age < 30) {
+                                return "Less than 30 days";
+                            } else if (age <= 60) {
+                                return "30 to 60 days";
+                            } else {
+                                return "Greater than 60 days";
+                            }
+                        }, Collectors.counting()) // Count vehicles in each age range
+                ));
     }
 
     private <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
+    }
+    public List<VehicleDTO> getAllUniqueVehicles() {
+        List<Vehicle> vehicles = vehicleRepository.findAll();
+
+        // Group vehicles by model and calculate age counts
+        Map<String, Map<String, Long>> ageCountsByModel = vehicles.stream()
+                .collect(Collectors.groupingBy(
+                        Vehicle::getModel,
+                        Collectors.groupingBy(vehicle -> {
+                            Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate()));
+                            if (age == null) {
+                                return "Unknown";
+                            } else if (age < 30) {
+                                return "Less than 30 days";
+                            } else if (age <= 60) {
+                                return "30 to 60 days";
+                            } else {
+                                return "Greater than 60 days";
+                            }
+                        }, Collectors.counting())
+                ));
+
+        // Map unique vehicles to DTOs and set age counts
+        return vehicles.stream()
+                .filter(distinctByKey(Vehicle::getModel)) // Unique by model
+                .map(vehicle -> {
+                    VehicleDTO dto = vehicleMapper.toDTO(vehicle);
+
+                    Map<String, Long> ageCounts = ageCountsByModel.getOrDefault(vehicle.getModel(), Map.of());
+                    dto.setLessThan30DaysCount(ageCounts.getOrDefault("Less than 30 days", 0L));
+                    dto.setBetween30And60DaysCount(ageCounts.getOrDefault("30 to 60 days", 0L));
+                    dto.setGreaterThan60DaysCount(ageCounts.getOrDefault("Greater than 60 days", 0L));
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }

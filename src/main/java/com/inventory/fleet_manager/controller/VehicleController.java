@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/vehicles")
@@ -58,4 +59,9 @@ public class VehicleController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/ageCountByModel")
+    public ResponseEntity<Map<String, Map<String, Long>>> getAgeCountByModel() {
+        Map<String, Map<String, Long>> ageCountByModel = vehicleService.getAgeCountByModel();
+        return new ResponseEntity<>(ageCountByModel, HttpStatus.OK);
+    }
 }

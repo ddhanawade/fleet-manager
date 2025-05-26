@@ -36,4 +36,7 @@ public class VehicleDTO {
     private String interest;
     private String status;
     private String make;
+    private Long lessThan30DaysCount;
+    private Long between30And60DaysCount;
+    private Long greaterThan60DaysCount;
 }
