@@ -64,4 +64,5 @@ public class VehicleController {
         Map<String, Map<String, Long>> ageCountByModel = vehicleService.getAgeCountByModel();
         return new ResponseEntity<>(ageCountByModel, HttpStatus.OK);
     }
+
 }

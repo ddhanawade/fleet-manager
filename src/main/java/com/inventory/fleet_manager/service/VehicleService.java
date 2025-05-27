@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -24,25 +27,71 @@ public class VehicleService {
 
     private final VehicleMapper vehicleMapper;
 
+    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()); // Custom thread pool
 
     public VehicleService(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper, VehicleUtils vehicleUtils) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleMapper = vehicleMapper;
     }
+    /**
+     * Retrieves all vehicles from the repository, processes them asynchronously,
+     * and returns a list of VehicleDTOs with calculated ages.
+     *
+     * @return List of VehicleDTOs
+     */
 
     public List<VehicleDTO> getAllVehicles() {
         List<Vehicle> vehicles = vehicleRepository.findAll();
+
+        // Process each vehicle asynchronously with exception handling
+        List<CompletableFuture<VehicleDTO>> futures = vehicles.stream()
+                .map(vehicle -> CompletableFuture.supplyAsync(() -> {
+                            VehicleDTO dto = vehicleMapper.toDTO(vehicle); // Ensure vehicleMapper is thread-safe
+
+                            // Calculate and set age
+                            Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
+                            dto.setAge(age);
+
+                            return dto;
+                        }, executorService) // Use custom executor
+                        .exceptionally(ex -> {
+                            // Log the exception and return a fallback DTO
+                            System.err.println("Error processing vehicle: " + ex.getMessage());
+                            return new VehicleDTO(); // Return a default or fallback DTO
+                        }))
+                .collect(Collectors.toList());
+
+        // Wait for all tasks to complete and collect results
+        return futures.stream()
+                .map(CompletableFuture::join) // Wait for each future to complete
+                .collect(Collectors.toList());
+    }
+
+    public void measurePerformance() {
+        // Measure performance without threading
+        long startWithoutThreading = System.nanoTime();
+        List<VehicleDTO> resultWithoutThreading = getAllVehiclesWithoutThreading(); // Implement a non-threaded version
+        long endWithoutThreading = System.nanoTime();
+        System.out.println("Execution time without threading: " + (endWithoutThreading - startWithoutThreading) / 1_000_000 + " ms");
+
+        // Measure performance with threading
+        long startWithThreading = System.nanoTime();
+        List<VehicleDTO> resultWithThreading = getAllVehicles(); // Threaded version
+        long endWithThreading = System.nanoTime();
+        System.out.println("Execution time with threading: " + (endWithThreading - startWithThreading) / 1_000_000 + " ms");
+    }
+
+    private List<VehicleDTO> getAllVehiclesWithoutThreading() {
+        List<Vehicle> vehicles = vehicleRepository.findAll();
+
+        // Process each vehicle synchronously
         return vehicles.stream()
                 .map(vehicle -> {
-                    VehicleDTO dto = vehicleMapper.toDTO(vehicle);
+                    VehicleDTO dto = vehicleMapper.toDTO(vehicle); // Ensure vehicleMapper is thread-safe
 
                     // Calculate and set age
-                    Integer ageString = (VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())));
-                    dto.setAge(ageString);
-
-                    // Calculate and set interest
-//                    String interest = VehicleUtils.calculateInterest(vehicle.getInvoiceValue(), dto.getAge());
-//                    dto.setInterest(interest.equals("Invalid input") ? null : interest);
+                    Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
+                    dto.setAge(age);
 
                     return dto;
                 })
