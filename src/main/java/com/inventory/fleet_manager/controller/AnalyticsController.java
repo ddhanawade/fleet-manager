@@ -19,7 +19,7 @@ public class AnalyticsController {
     @GetMapping("/monthly-sales")
     public AnalyticsResponse getMonthlySalesReport(
             @RequestParam String dateRange,
-            @RequestParam String city,
+            @RequestParam(required = false) String city,
             @RequestParam(required = false) String make,
             @RequestParam(required = false) String model) {
         // Parse dateRange into startDate and endDate
@@ -50,15 +50,26 @@ public class AnalyticsController {
 
     @GetMapping("/top-model-sold")
     public AnalyticsResponse getTopModelSold(
-            @RequestParam(required = true) String startDate,
-            @RequestParam(required = true) String endDate,
-            @RequestParam(required = true) String city,
+            @RequestParam String dateRange,
+            @RequestParam(required = false) String city,
             @RequestParam(required = false) String make,
             @RequestParam(required = false) String model) {
 
+        // Parse dateRange into startDate and endDate
+        String[] dates = dateRange.split("_to_");
+        if (dates.length != 2) {
+            throw new IllegalArgumentException("Invalid dateRange format");
+        }
+        LocalDate startDate = LocalDate.parse(dates[0]);
+        LocalDate endDate = LocalDate.parse(dates[1]);
+
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must be less than end date");
+        }
+
         Map<String, String> filters = new HashMap<>();
-        filters.put("startDate", startDate);
-        filters.put("endDate", endDate);
+        filters.put("startDate", String.valueOf(startDate));
+        filters.put("endDate", String.valueOf(endDate));
         filters.put("city", city);
 
         if (make != null && !make.isEmpty()) {
