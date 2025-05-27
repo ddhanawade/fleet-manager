@@ -1,6 +1,7 @@
 package com.inventory.fleet_manager.service;
 
 import com.inventory.fleet_manager.dto.OrderDTO;
+import com.inventory.fleet_manager.enums.status;
 import com.inventory.fleet_manager.mapper.OrderMapper;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Order;
@@ -68,7 +69,11 @@ public class OrderService {
             order.setRemarks(orderDTO.getRemarks());
         }
         if (orderDTO.getStatus() != null && !orderDTO.getStatus().isBlank()) {
-            order.setStatus(orderDTO.getStatus());
+            try {
+                order.setStatus(status.valueOf(orderDTO.getStatus().toUpperCase())); // Convert String to enum
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid status value: " + orderDTO.getStatus());
+            }
         }
         if (orderDTO.getDeliveryDate() != null ) {
             order.setDeliveryDate(orderDTO.getDeliveryDate());
