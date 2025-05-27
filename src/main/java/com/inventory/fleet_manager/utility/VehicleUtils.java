@@ -9,20 +9,20 @@ import java.time.temporal.ChronoUnit;
 
 @Component
 public class VehicleUtils {
-//   public static String calculateInterest(String invoiceValue, Integer age) {
-//        if (invoiceValue == null || age == null || invoiceValue.isEmpty() || age < 0) {
-//            return "Invalid input";
-//        }
-//
-//        try {
-//            double value = Double.parseDouble(invoiceValue);
-//            double interestRate = 0.05; // Example interest rate of 5%
-//            double interest = value * interestRate * age;
-//            return String.format("%.2f", interest);
-//        } catch (NumberFormatException e) {
-//            return "Invalid invoice value";
-//        }
-//    }
+   public static String calculateInterest(String invoiceValue, Integer age) {
+        if (invoiceValue == null || age == null || invoiceValue.isEmpty() || age < 0) {
+            return "Invalid input";
+        }
+
+        try {
+            double value = Double.parseDouble(invoiceValue);
+            double interestRate = 0.05; // Example interest rate of 5%
+            double interest = value * interestRate * age;
+            return String.format("%.2f", interest);
+        } catch (NumberFormatException e) {
+            return "Invalid invoice value";
+        }
+    }
     public static Integer calculateVehicleAge(String receivedDate) {
         if (receivedDate == null || receivedDate.isEmpty()) {
             return null; // Return null if receivedDate is null or empty

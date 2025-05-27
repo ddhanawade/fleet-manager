@@ -49,8 +49,13 @@ public class VehicleService {
                             VehicleDTO dto = vehicleMapper.toDTO(vehicle); // Ensure vehicleMapper is thread-safe
 
                             // Calculate and set age
-                            Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
-                            dto.setAge(age);
+                            Integer vehicleAge = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
+                            dto.setAge(vehicleAge);
+
+                            // calculate interest
+                            String invoiceValue = vehicle.getTkmInvoiceValue();
+                            String interest = VehicleUtils.calculateInterest(invoiceValue, vehicleAge);
+                            dto.setInterest(interest);
 
                             return dto;
                         }, executorService) // Use custom executor
@@ -90,8 +95,13 @@ public class VehicleService {
                     VehicleDTO dto = vehicleMapper.toDTO(vehicle); // Ensure vehicleMapper is thread-safe
 
                     // Calculate and set age
-                    Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
-                    dto.setAge(age);
+                    Integer vehicleAge = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
+                    dto.setAge(vehicleAge);
+
+                    // calculate interest
+                    String invoiceValue = vehicle.getTkmInvoiceValue();
+                    String interest = VehicleUtils.calculateInterest(invoiceValue, vehicleAge);
+                    dto.setInterest(interest);
 
                     return dto;
                 })
