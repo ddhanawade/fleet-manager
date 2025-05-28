@@ -48,15 +48,6 @@ public class VehicleService {
                 .map(vehicle -> CompletableFuture.supplyAsync(() -> {
                             VehicleDTO dto = vehicleMapper.toDTO(vehicle); // Ensure vehicleMapper is thread-safe
 
-                            // Calculate and set age
-                            Integer vehicleAge = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
-                            dto.setAge(vehicleAge);
-
-                            // calculate interest
-                            String invoiceValue = vehicle.getTkmInvoiceValue();
-                            String interest = VehicleUtils.calculateInterest(invoiceValue, vehicleAge);
-                            dto.setInterest(interest);
-
                             return dto;
                         }, executorService) // Use custom executor
                         .exceptionally(ex -> {
@@ -86,22 +77,13 @@ public class VehicleService {
         System.out.println("Execution time with threading: " + (endWithThreading - startWithThreading) / 1_000_000 + " ms");
     }
 
-    private List<VehicleDTO> getAllVehiclesWithoutThreading() {
+    public List<VehicleDTO> getAllVehiclesWithoutThreading() {
         List<Vehicle> vehicles = vehicleRepository.findAll();
 
         // Process each vehicle synchronously
         return vehicles.stream()
                 .map(vehicle -> {
                     VehicleDTO dto = vehicleMapper.toDTO(vehicle); // Ensure vehicleMapper is thread-safe
-
-                    // Calculate and set age
-                    Integer vehicleAge = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
-                    dto.setAge(vehicleAge);
-
-                    // calculate interest
-                    String invoiceValue = vehicle.getTkmInvoiceValue();
-                    String interest = VehicleUtils.calculateInterest(invoiceValue, vehicleAge);
-                    dto.setInterest(interest);
 
                     return dto;
                 })
@@ -167,7 +149,12 @@ public class VehicleService {
         if (vehicleDTO.getReceivedDate() != null) {
             existingVehicle.setReceivedDate(vehicleDTO.getReceivedDate());
         }
-
+        if (vehicleDTO.getAge() != null) {
+            existingVehicle.setAge(vehicleDTO.getAge());
+        }
+        if (vehicleDTO.getInterest() != null) {
+            existingVehicle.setInterest(vehicleDTO.getInterest());
+        }
         // Save the updated entity
         Vehicle updatedVehicle = vehicleRepository.save(existingVehicle);
 
