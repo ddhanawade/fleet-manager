@@ -31,7 +31,7 @@ public class VehicleDTO {
     private String engineNumber;
     private String keyNumber;
     private String location;
-    private String tkmInvoiceValue;
+    private String invoiceValue;
     private  Integer age;
     private String interest;
     private String status;

@@ -46,6 +46,7 @@ public class VehicleUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
         LocalDateTime dateTime = LocalDateTime.parse(receivedDate, formatter);
 
+        // Extract only the date
         String extractedDate = dateTime.toLocalDate().toString();
 
         log.info("Date: " + extractedDate); // Output: Date: 2024-09-03
