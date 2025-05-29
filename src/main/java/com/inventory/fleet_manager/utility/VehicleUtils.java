@@ -30,26 +30,39 @@ public class VehicleUtils {
 
     public static Integer calculateVehicleAge(String receivedDateString) {
         try {
-            // Update the formatter to handle `.000000` microseconds
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-            LocalDateTime receivedDate = LocalDateTime.parse(receivedDateString, formatter);
+            // Define formatter for date with time and fractional seconds
+            DateTimeFormatter formatterWithTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+            LocalDate receivedDate;
 
-            // Calculate the age in Days
-            return (int) ChronoUnit.DAYS.between(receivedDate.toLocalDate(), LocalDate.now());
+            // Try parsing with time component
+            try {
+                receivedDate = LocalDateTime.parse(receivedDateString, formatterWithTime).toLocalDate();
+            } catch (DateTimeParseException e) {
+                // Fallback to parsing without time component
+                DateTimeFormatter formatterWithoutTime = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                receivedDate = LocalDate.parse(receivedDateString, formatterWithoutTime);
+            }
+
+            // Calculate the age in days
+            return (int) ChronoUnit.DAYS.between(receivedDate, LocalDate.now());
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Error parsing received date: " + receivedDateString, e);
+            throw new IllegalArgumentException("Error parsing received date calculateVehicleAge: " + receivedDateString, e);
         }
     }
 
-    private static String extractDate(String receivedDate) {
+    public static String extractDate(String receivedDate) {
         log.info("Received date: " + receivedDate);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-        LocalDateTime dateTime = LocalDateTime.parse(receivedDate, formatter);
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(receivedDate, formatter);
 
-        // Extract only the date
-        String extractedDate = dateTime.toLocalDate().toString();
+            // Extract only the date
+            String extractedDate = dateTime.toLocalDate().toString();
 
-        log.info("Date: " + extractedDate); // Output: Date: 2024-09-03
-        return extractedDate; // Return as is if no 'T' present
+            log.info("Date: " + extractedDate); // Output: Date: 2024-09-03
+            return extractedDate; // Return as is if no 'T' present
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Error parsing received date: " + receivedDate, e);
+        }
     }
 }

@@ -47,7 +47,7 @@ public class VehicleAgeScheduler {
                         continue;
                     }
                     if (vehicle.getReceivedDate() != null) {
-                        String receivedDateString = dateFormat.format(vehicle.getReceivedDate());
+                        String receivedDateString = VehicleUtils.extractDate(String.valueOf(vehicle.getReceivedDate()));
                         Integer age = VehicleUtils.calculateVehicleAge(receivedDateString);
                         if (age != null) {
                             vehicle.setAge(age);
@@ -78,8 +78,8 @@ public class VehicleAgeScheduler {
                         continue;
                     }
                     try {
-                        if (vehicle.getAge() != null && vehicle.getTkminvoiceValue() != null) {
-                            String interest = VehicleUtils.calculateInterest(vehicle.getTkminvoiceValue(), vehicle.getAge());
+                        if (vehicle.getAge() != null && vehicle.getTkmInvoiceValue() != null) {
+                            String interest = VehicleUtils.calculateInterest(vehicle.getTkmInvoiceValue(), vehicle.getAge());
                             vehicle.setInterest(interest);
                             vehicleService.updateVehicle(vehicle.getId(), vehicle);
                         }
