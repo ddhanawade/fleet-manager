@@ -8,6 +8,9 @@ import com.inventory.fleet_manager.repository.VehicleRepository;
 import com.inventory.fleet_manager.utility.VehicleUtils;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -113,48 +116,72 @@ public class VehicleService {
                 .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with id: " + id));
 
         // Update only the fields provided in the DTO
-        if (vehicleDTO.getMake() != null) {
+        if (vehicleDTO.getMake() != null && !vehicleDTO.getMake().equals(existingVehicle.getMake())) {
             existingVehicle.setMake(vehicleDTO.getMake());
         }
-        if (vehicleDTO.getModel() != null) {
+        if (vehicleDTO.getModel() != null && !vehicleDTO.getModel().equals(existingVehicle.getModel())) {
             existingVehicle.setModel(vehicleDTO.getModel());
         }
-        if (vehicleDTO.getGrade() != null) {
+        if (vehicleDTO.getGrade() != null && !vehicleDTO.getGrade().equals(existingVehicle.getGrade())) {
             existingVehicle.setGrade(vehicleDTO.getGrade());
         }
-        if (vehicleDTO.getFuelType() != null) {
+        if (vehicleDTO.getFuelType() != null && !vehicleDTO.getFuelType().equals(existingVehicle.getFuelType())) {
             existingVehicle.setFuelType(vehicleDTO.getFuelType());
         }
-        if (vehicleDTO.getExteriorColor() != null) {
+        if (vehicleDTO.getExteriorColor() != null && !vehicleDTO.getExteriorColor().equals(existingVehicle.getExteriorColor())) {
             existingVehicle.setExteriorColor(vehicleDTO.getExteriorColor());
         }
-        if (vehicleDTO.getInteriorColor() != null) {
+        if (vehicleDTO.getInteriorColor() != null && !vehicleDTO.getInteriorColor().equals(existingVehicle.getInteriorColor())) {
             existingVehicle.setInteriorColor(vehicleDTO.getInteriorColor());
         }
-        if (vehicleDTO.getLocation() != null) {
+        if (vehicleDTO.getLocation() != null && !vehicleDTO.getLocation().equals(existingVehicle.getLocation())) {
             existingVehicle.setLocation(vehicleDTO.getLocation());
         }
-        if (vehicleDTO.getStatus() != null) {
+        if (vehicleDTO.getStatus() != null && !vehicleDTO.getStatus().equals(existingVehicle.getStatus())) {
             existingVehicle.setStatus(vehicleDTO.getStatus());
         }
-        if (vehicleDTO.getChassisNumber() != null) {
+        if (vehicleDTO.getChassisNumber() != null && !vehicleDTO.getChassisNumber().equals(existingVehicle.getChassisNumber())) {
             existingVehicle.setChassisNumber(vehicleDTO.getChassisNumber());
         }
-        if (vehicleDTO.getEngineNumber() != null) {
+        if (vehicleDTO.getEngineNumber() != null && !vehicleDTO.getEngineNumber().equals(existingVehicle.getEngineNumber())) {
             existingVehicle.setEngineNumber(vehicleDTO.getEngineNumber());
         }
-        if (vehicleDTO.getKeyNumber() != null) {
+        if (vehicleDTO.getKeyNumber() != null && !vehicleDTO.getKeyNumber().equals(existingVehicle.getKeyNumber())) {
             existingVehicle.setKeyNumber(vehicleDTO.getKeyNumber());
         }
-        if (vehicleDTO.getReceivedDate() != null) {
-            existingVehicle.setReceivedDate(vehicleDTO.getReceivedDate());
+        if (vehicleDTO.getInvoiceDate() != null && !vehicleDTO.getInvoiceDate().equals(existingVehicle.getInvoiceDate())) {
+            existingVehicle.setInvoiceDate(vehicleDTO.getInvoiceDate());
         }
-        if (vehicleDTO.getAge() != null) {
+        if (vehicleDTO.getInvoiceNumber() != null && !vehicleDTO.getInvoiceNumber().equals(existingVehicle.getInvoiceNumber())) {
+            existingVehicle.setInvoiceNumber(vehicleDTO.getInvoiceNumber());
+        }
+        if (vehicleDTO.getPurchaseDealer() != null && !vehicleDTO.getPurchaseDealer().equals(existingVehicle.getPurchaseDealer())) {
+            existingVehicle.setPurchaseDealer(vehicleDTO.getPurchaseDealer());
+        }
+        if (vehicleDTO.getManufactureDate() != null && !vehicleDTO.getManufactureDate().equals(existingVehicle.getManufactureDate())) {
+            existingVehicle.setManufactureDate(vehicleDTO.getManufactureDate());
+        }
+        if (vehicleDTO.getSuffix() != null && !vehicleDTO.getSuffix().equals(existingVehicle.getSuffix())) {
+            existingVehicle.setSuffix(vehicleDTO.getSuffix());
+        }
+        if (vehicleDTO.getTkmInvoiceValue() != null && !vehicleDTO.getTkmInvoiceValue().equals(existingVehicle.getTkmInvoiceValue())) {
+            existingVehicle.setTkmInvoiceValue(vehicleDTO.getTkmInvoiceValue());
+        }
+        if (vehicleDTO.getReceivedDate() != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = dateFormat.format(vehicleDTO.getReceivedDate()); // Convert Date to String
+            LocalDate receivedDate = LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")); // Parse to LocalDate
+            if (!receivedDate.equals(existingVehicle.getReceivedDate())) {
+                existingVehicle.setReceivedDate(java.sql.Date.valueOf(receivedDate)); // Convert LocalDate to java.sql.Date
+            }
+        }
+        if (vehicleDTO.getAge() != null && !vehicleDTO.getAge().equals(existingVehicle.getAge())) {
             existingVehicle.setAge(vehicleDTO.getAge());
         }
-        if (vehicleDTO.getInterest() != null) {
+        if (vehicleDTO.getInterest() != null && !vehicleDTO.getInterest().equals(existingVehicle.getInterest())) {
             existingVehicle.setInterest(vehicleDTO.getInterest());
         }
+
         // Save the updated entity
         Vehicle updatedVehicle = vehicleRepository.save(existingVehicle);
 
