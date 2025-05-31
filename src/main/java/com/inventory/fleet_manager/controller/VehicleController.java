@@ -14,8 +14,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/vehicles")
-//@CrossOrigin(origins = "http://inventory-management-client.s3-website.us-east-2.amazonaws.com")
-@CrossOrigin(origins = "http://localhost:4200")
 public class VehicleController {
     private final VehicleService vehicleService;
 
