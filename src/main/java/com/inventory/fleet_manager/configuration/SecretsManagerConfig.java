@@ -14,9 +14,11 @@ import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
 import com.amazonaws.services.secretsmanager.model.*;
 import com.google.gson.Gson;
+import org.springframework.context.annotation.Profile;
 
 
 @Configuration
+@Profile("prd")
 public class SecretsManagerConfig {
 
     @Value("${cloud.aws.credentials.access-key}")
