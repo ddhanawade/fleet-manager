@@ -1,5 +1,8 @@
 package com.inventory.fleet_manager.dto;
 
+import com.inventory.fleet_manager.enums.orderStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +15,7 @@ import java.util.Date;
 public class OrderDTO {
     private Long orderId;
     private String customerName;
-    private Integer phoneNumber;
+    private String phoneNumber;
     private String leadName;
     private  String salesPersonName;
     private Date orderDate;
@@ -25,5 +28,6 @@ public class OrderDTO {
     private String createdBy;
     private String updatedBy;
     private Long vehicleId;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private orderStatus orderStatus;
 }

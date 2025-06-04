@@ -1,6 +1,9 @@
 package com.inventory.fleet_manager.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.inventory.fleet_manager.enums.status;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,7 +37,8 @@ public class VehicleDTO {
     private String tkmInvoiceValue;
     private  Integer age;
     private String interest;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private status vehicleStatus;
     private String make;
     private Long lessThan30DaysCount;
     private Long between30And60DaysCount;

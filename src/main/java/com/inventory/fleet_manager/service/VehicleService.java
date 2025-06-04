@@ -120,7 +120,7 @@ public class VehicleService {
             existingVehicle.setMake(vehicleDTO.getMake());
         }
         if (vehicleDTO.getModel() != null && !vehicleDTO.getModel().equals(existingVehicle.getModel())) {
-            existingVehicle.setModel(vehicleDTO.getModel());
+            existingVehicle.setModel(vehicleDTO.getModel().toUpperCase());
         }
         if (vehicleDTO.getGrade() != null && !vehicleDTO.getGrade().equals(existingVehicle.getGrade())) {
             existingVehicle.setGrade(vehicleDTO.getGrade());
@@ -137,8 +137,12 @@ public class VehicleService {
         if (vehicleDTO.getLocation() != null && !vehicleDTO.getLocation().equals(existingVehicle.getLocation())) {
             existingVehicle.setLocation(vehicleDTO.getLocation());
         }
-        if (vehicleDTO.getStatus() != null && !vehicleDTO.getStatus().equals(existingVehicle.getStatus())) {
-            existingVehicle.setStatus(vehicleDTO.getStatus());
+        if (vehicleDTO.getVehicleStatus() != null) {
+            try {
+                existingVehicle.setVehicleStatus(vehicleDTO.getVehicleStatus());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid vehicle status value: " + vehicleDTO.getVehicleStatus());
+            }
         }
         if (vehicleDTO.getChassisNumber() != null && !vehicleDTO.getChassisNumber().equals(existingVehicle.getChassisNumber())) {
             existingVehicle.setChassisNumber(vehicleDTO.getChassisNumber());

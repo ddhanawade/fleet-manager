@@ -42,7 +42,7 @@ public class VehicleAgeScheduler {
                     continue;
                 }
                 try {
-                    if (vehicle.getStatus() != null && vehicle.getStatus().equals(status.SOLD.name())) {
+                    if (vehicle.getVehicleStatus() != null && vehicle.getVehicleStatus().equals(status.SOLD.name())) {
                         log.info("Skipping age update for vehicle with ID: {} as it is SOLD.", vehicle.getId());
                         continue;
                     }

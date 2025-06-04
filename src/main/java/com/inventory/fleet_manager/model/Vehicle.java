@@ -1,5 +1,6 @@
 package com.inventory.fleet_manager.model;
 
+import com.inventory.fleet_manager.enums.status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +26,8 @@ public class Vehicle {
     private String engineNumber;
     private String keyNumber;
     private String location;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private status vehicleStatus;
     private Date receivedDate;
     private String invoiceDate;
     private String invoiceNumber;
