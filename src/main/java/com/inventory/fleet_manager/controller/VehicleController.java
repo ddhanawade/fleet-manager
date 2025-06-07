@@ -1,6 +1,8 @@
 package com.inventory.fleet_manager.controller;
 
 import com.inventory.fleet_manager.dto.VehicleDTO;
+import com.inventory.fleet_manager.dto.VehicleOrderResponse;
+import com.inventory.fleet_manager.enums.status;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Vehicle;
@@ -63,4 +65,8 @@ public class VehicleController {
         return new ResponseEntity<>(ageCountByModel, HttpStatus.OK);
     }
 
+    @GetMapping("/vehiclesAndOrderDetailsByModel")
+    public List<VehicleOrderResponse> getVehicleAndOrderDetailsByModel(@RequestParam String model) {
+        return vehicleService.getVehicleAndOrderDetailsByModel(model);
+    }
 }

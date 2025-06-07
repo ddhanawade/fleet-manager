@@ -1,11 +1,13 @@
 package com.inventory.fleet_manager.service;
 
 import com.inventory.fleet_manager.dto.VehicleDTO;
+import com.inventory.fleet_manager.dto.VehicleOrderResponse;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.repository.VehicleRepository;
 import com.inventory.fleet_manager.utility.VehicleUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -24,6 +26,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
@@ -260,5 +263,25 @@ public class VehicleService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<VehicleOrderResponse> getVehicleAndOrderDetailsByModel(String model) {
+        try {
+            log.info("Entering getVehicleAndOrderDetailsByModel with model: {}", model);
+            if (model == null || model.trim().isEmpty()) {
+                throw new IllegalArgumentException("Model parameter cannot be null or empty");
+            }
+            List<VehicleOrderResponse> response = vehicleRepository.findVehicleAndOrderDetailsByModel(model);
+            log.info("Successfully retrieved vehicle and order details for model: {}", model);
+            return response;
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid input for model: {}", model, e);
+            throw e;
+        } catch (RuntimeException e) {
+            log.error("Unexpected error occurred while fetching vehicle and order details for model: {}", model, e);
+            throw e;
+        } finally {
+            log.info("Exiting getVehicleAndOrderDetailsByModel");
+        }
     }
 }
