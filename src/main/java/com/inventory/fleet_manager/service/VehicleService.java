@@ -36,7 +36,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.io.InputStreamReader;
 
-@Slf4j
 @Service
 @Slf4j
 public class VehicleService {
