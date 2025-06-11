@@ -1,5 +1,6 @@
 package com.inventory.fleet_manager.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inventory.fleet_manager.enums.status;
 import jakarta.persistence.EnumType;
@@ -15,14 +16,12 @@ import java.util.Date;
 @NoArgsConstructor
 public class VehicleDTO {
     private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") // Format the date
-    private String invoiceDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yy")
+    private Date invoiceDate;
     private String invoiceNumber;
     private String purchaseDealer;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") // Format the date
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yy")
     private Date receivedDate;
-   // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd/yy")
     private String manufactureDate;
     private String model;
     private String grade;
@@ -38,6 +37,7 @@ public class VehicleDTO {
     private  Integer age;
     private String interest;
     @Enumerated(EnumType.STRING)
+    @JsonAlias("status")
     private status vehicleStatus;
     private String make;
     private Long lessThan30DaysCount;

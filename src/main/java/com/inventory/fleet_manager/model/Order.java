@@ -21,7 +21,7 @@ public class Order {
     private String customerName;
     private String phoneNumber;
     private String leadName;
-    private  String salesPersonName;
+    private String salesPersonName;
     private Date orderDate;
     private Date deliveryDate;
     private String financerName;

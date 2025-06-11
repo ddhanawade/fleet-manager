@@ -1,11 +1,15 @@
 package com.inventory.fleet_manager.repository;
 
 import com.inventory.fleet_manager.dto.AnalyticsResponse;
+import com.inventory.fleet_manager.dto.MonthlySalesResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -15,49 +19,53 @@ public class AnalyticsRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public AnalyticsResponse fetchMonthlySales(Map<String, String> filters) {
+    public List<MonthlySalesResponse> getMonthlySalesReport(Map<String, String> filters) {
         StringBuilder queryBuilder = new StringBuilder(
-                "SELECT DATE(o.order_date) AS date, " +
-                        "v.model, " +
-                        "SUM(v.tkm_invoice_value) AS totalSales " + // Use SUM for aggregation
-                        "FROM orders o " +
-                        "JOIN vehicle v ON o.vehicle_id = v.id " +
+                "SELECT v.model, v.location, v.tkm_invoice_value, o.order_date " +
+                        "FROM vehicle v " +
+                        "JOIN orders o ON v.id = o.vehicle_id " +
                         "WHERE o.order_date BETWEEN :startDate AND :endDate "
         );
-
-        if (filters.containsKey("brandName") && filters.get("brandName") != null && !filters.get("brandName").isEmpty()) {
-            queryBuilder.append("AND v.make = :brandName ");
+        // Add optional filters
+        if (filters.containsKey("model") && filters.get("model") != null && !filters.get("model").isEmpty()) {
+            queryBuilder.append("AND v.model = :model ");
         }
-
-        if (filters.containsKey("modelName") && filters.get("modelName") != null && !filters.get("modelName").isEmpty()) {
-            queryBuilder.append("AND v.model = :modelName ");
+        if (filters.containsKey("make") && filters.get("make") != null && !filters.get("make").isEmpty()) {
+            queryBuilder.append("AND v.make = :make ");
         }
-
-        queryBuilder.append("GROUP BY DATE(o.order_date), v.model ");
-        queryBuilder.append("ORDER BY DATE(o.order_date)");
+        if (filters.containsKey("city") && filters.get("city") != null && !filters.get("city").isEmpty()) {
+            queryBuilder.append("AND v.location = :city ");
+        }
 
         Query nativeQuery = entityManager.createNativeQuery(queryBuilder.toString());
 
         nativeQuery.setParameter("startDate", filters.get("startDate"));
         nativeQuery.setParameter("endDate", filters.get("endDate"));
 
-        if (filters.containsKey("brandName") && filters.get("brandName") != null && !filters.get("brandName").isEmpty()) {
-            nativeQuery.setParameter("brandName", filters.get("brandName"));
+        if (filters.containsKey("model") && filters.get("model") != null && !filters.get("model").isEmpty()) {
+            nativeQuery.setParameter("model", filters.get("model"));
         }
-        if (filters.containsKey("modelName") && filters.get("modelName") != null && !filters.get("modelName").isEmpty()) {
-            nativeQuery.setParameter("modelName", filters.get("modelName"));
+        if (filters.containsKey("make") && filters.get("make") != null && !filters.get("make").isEmpty()) {
+            nativeQuery.setParameter("make", filters.get("make"));
+        }
+        if (filters.containsKey("city") && filters.get("city") != null && !filters.get("city").isEmpty()) {
+            nativeQuery.setParameter("city", filters.get("city"));
         }
 
         List<Object[]> results = nativeQuery.getResultList();
-        List<AnalyticsResponse.Data> dataList = results.stream()
-                .map(result -> new AnalyticsResponse.Data(
-                        result[0].toString(), // date
-                        result[1].toString(), // model
-                        Double.parseDouble(result[2].toString()) // totalSales
-                ))
+        return results.stream()
+                .map(result -> {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+                    LocalDateTime dateTime = LocalDateTime.parse(result[3].toString(), formatter);
+                    LocalDate orderDate = dateTime.toLocalDate();
+                    return new MonthlySalesResponse(
+                            result[0].toString(), // model
+                            orderDate, // order_date
+                            result[1].toString(), // location
+                            Double.parseDouble(result[2].toString()) // invoice_value
+                    );
+                })
                 .toList();
-
-        return new AnalyticsResponse(dataList);
     }
 
     public AnalyticsResponse fetchTopModelSold(Map<String, String> filters) {
@@ -69,10 +77,9 @@ public class AnalyticsRepository {
                         "WHERE o.order_date BETWEEN :startDate AND :endDate "
         );
 
-        // Add city filter if provided
-//        if (filters.containsKey("city") && filters.get("city") != null && !filters.get("city").isEmpty()) {
-//            queryBuilder.append("AND c.name = :city ");
-//        }
+        if (filters.containsKey("city") && filters.get("city") != null && !filters.get("city").isEmpty()) {
+            queryBuilder.append("AND c.name = :city ");
+        }
 
         // Add make filter if provided
         if (filters.containsKey("make") && filters.get("make") != null && !filters.get("make").isEmpty()) {

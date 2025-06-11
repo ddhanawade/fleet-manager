@@ -29,7 +29,7 @@ public class Vehicle {
     @Enumerated(EnumType.STRING)
     private status vehicleStatus;
     private Date receivedDate;
-    private String invoiceDate;
+    private Date invoiceDate;
     private String invoiceNumber;
     private String purchaseDealer;
     private String manufactureDate;

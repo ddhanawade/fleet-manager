@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Component
@@ -33,7 +32,6 @@ public class VehicleAgeScheduler {
         try {
             List<VehicleDTO> vehicles = vehicleService.getAllVehiclesWithoutThreading();
             log.info("Retrieved {} vehicles for age update.", vehicles.size());
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
 
             // Update the age of each vehicle
             for (VehicleDTO vehicle : vehicles) {
@@ -46,9 +44,9 @@ public class VehicleAgeScheduler {
                         log.info("Skipping age update for vehicle with ID: {} as it is SOLD.", vehicle.getId());
                         continue;
                     }
-                    if (vehicle.getReceivedDate() != null) {
-                        String receivedDateString = VehicleUtils.extractDate(String.valueOf(vehicle.getReceivedDate()));
-                        Integer age = VehicleUtils.calculateVehicleAge(receivedDateString);
+                    if (vehicle.getInvoiceDate() != null) {
+                        String invoiceDateString = VehicleUtils.extractDate(String.valueOf(vehicle.getInvoiceDate()));
+                        Integer age = VehicleUtils.calculateVehicleAge(invoiceDateString);
                         if (age != null) {
                             vehicle.setAge(age);
                             vehicleService.updateVehicle(vehicle.getId(), vehicle);

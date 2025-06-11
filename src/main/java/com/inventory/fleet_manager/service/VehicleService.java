@@ -248,7 +248,7 @@ public class VehicleService {
                 .collect(Collectors.groupingBy(
                         Vehicle::getModel,
                         Collectors.groupingBy(vehicle -> {
-                            Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate()));
+                            Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getInvoiceDate()));
                             if (age == null) {
                                 return "Unknown";
                             } else if (age < 30) {

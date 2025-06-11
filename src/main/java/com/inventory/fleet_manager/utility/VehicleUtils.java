@@ -28,25 +28,24 @@ public class VehicleUtils {
     }
 
 
-    public static Integer calculateVehicleAge(String receivedDateString) {
+    public static Integer calculateVehicleAge(String invoiceDateString) {
         try {
             // Define formatter for date with time and fractional seconds
             DateTimeFormatter formatterWithTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-            LocalDate receivedDate;
+            LocalDate invoiceDate;
 
             // Try parsing with time component
             try {
-                receivedDate = LocalDateTime.parse(receivedDateString, formatterWithTime).toLocalDate();
+                invoiceDate = LocalDateTime.parse(invoiceDateString, formatterWithTime).toLocalDate();
             } catch (DateTimeParseException e) {
                 // Fallback to parsing without time component
                 DateTimeFormatter formatterWithoutTime = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                receivedDate = LocalDate.parse(receivedDateString, formatterWithoutTime);
+                invoiceDate = LocalDate.parse(invoiceDateString, formatterWithoutTime);
             }
 
-            // Calculate the age in days
-            return (int) ChronoUnit.DAYS.between(receivedDate, LocalDate.now());
+            return (int) ChronoUnit.DAYS.between(invoiceDate, LocalDate.now());
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Error parsing received date calculateVehicleAge: " + receivedDateString, e);
+            throw new IllegalArgumentException("Error parsing received date calculateVehicleAge: " + invoiceDateString, e);
         }
     }
 
