@@ -16,11 +16,11 @@ import java.util.Date;
 @NoArgsConstructor
 public class VehicleDTO {
     private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date invoiceDate;
     private String invoiceNumber;
     private String purchaseDealer;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date receivedDate;
     private String manufactureDate;
     private String model;
@@ -33,7 +33,7 @@ public class VehicleDTO {
     private String engineNumber;
     private String keyNumber;
     private String location;
-    private String tkmInvoiceValue;
+    private String invoiceValue;
     private  Integer age;
     private String interest;
     @Enumerated(EnumType.STRING)

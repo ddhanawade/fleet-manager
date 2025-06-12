@@ -6,6 +6,7 @@ import com.inventory.fleet_manager.enums.status;
 import com.inventory.fleet_manager.mapper.OrderMapper;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Order;
+import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,10 @@ public class OrderService {
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = orderMapper.toEntity(orderDTO);
+
+        order.setOrderDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+        order.setCreatedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+
         Order savedOrder = orderRepository.save(order);
         return orderMapper.toDTO(savedOrder);
     }

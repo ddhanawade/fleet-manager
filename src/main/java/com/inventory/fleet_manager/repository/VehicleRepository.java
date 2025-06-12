@@ -18,7 +18,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpec
             "v.id, v.make, v.model, v.grade, v.fuelType, v.exteriorColor, v.interiorColor, " +
             "v.chassisNumber, v.engineNumber, v.keyNumber, v.location, v.vehicleStatus, " +
             "v.receivedDate, v.invoiceDate, v.invoiceNumber, v.purchaseDealer, v.manufactureDate, " +
-            "v.suffix, v.tkmInvoiceValue, v.age, v.interest, " +
+            "v.suffix, v.invoiceValue, v.age, v.interest, " +
             "o.orderId, o.customerName, o.phoneNumber, o.leadName, o.salesPersonName, " +
             "o.orderDate, o.deliveryDate, o.financerName, o.financeType, o.remarks, " +
             "o.createdAt, o.updatedAt, o.createdBy, o.updatedBy, o.orderStatus) " +

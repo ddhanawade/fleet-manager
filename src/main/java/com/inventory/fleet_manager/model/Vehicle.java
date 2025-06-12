@@ -34,7 +34,7 @@ public class Vehicle {
     private String purchaseDealer;
     private String manufactureDate;
     private String suffix;
-    private String tkmInvoiceValue;
+    private String invoiceValue;
     private  Integer age;
     private String interest;
 }

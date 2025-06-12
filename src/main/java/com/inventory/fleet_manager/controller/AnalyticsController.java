@@ -18,7 +18,7 @@ public class AnalyticsController {
     @Autowired
     private AnalyticsService analyticsService;
 
-    @GetMapping("/monthly-sales")
+    @PostMapping("/monthly-sales")
     public List<MonthlySalesResponse> getMonthlySalesReport(@RequestBody MonthlySalesRequest request) {
         // Validate required fields
         if (request.getStartDate() == null || request.getEndDate() == null) {

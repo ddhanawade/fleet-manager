@@ -1,5 +1,6 @@
 package com.inventory.fleet_manager.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inventory.fleet_manager.enums.orderStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,7 +19,9 @@ public class OrderDTO {
     private String phoneNumber;
     private String leadName;
     private  String salesPersonName;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private Date orderDate;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private Date deliveryDate;
     private String financerName;
     private String financeType;

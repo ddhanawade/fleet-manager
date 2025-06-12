@@ -184,8 +184,8 @@ public class VehicleService {
         if (vehicleDTO.getSuffix() != null && !vehicleDTO.getSuffix().equals(existingVehicle.getSuffix())) {
             existingVehicle.setSuffix(vehicleDTO.getSuffix());
         }
-        if (vehicleDTO.getTkmInvoiceValue() != null && !vehicleDTO.getTkmInvoiceValue().equals(existingVehicle.getTkmInvoiceValue())) {
-            existingVehicle.setTkmInvoiceValue(vehicleDTO.getTkmInvoiceValue());
+        if (vehicleDTO.getInvoiceValue() != null && !vehicleDTO.getInvoiceValue().equals(existingVehicle.getInvoiceValue())) {
+            existingVehicle.setInvoiceValue(vehicleDTO.getInvoiceValue());
         }
         if (vehicleDTO.getReceivedDate() != null) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -280,64 +280,34 @@ public class VehicleService {
 
     public void saveVehiclesFromFile(MultipartFile file) throws Exception {
         String fileName = file.getOriginalFilename();
-        if (fileName == null) {
-            throw new IllegalArgumentException("File name is missing.");
+        if (fileName.isBlank()  || !fileName.endsWith(".csv")) {
+            throw new IllegalArgumentException("Invalid file format. Please upload a CSV file.");
         }
 
         logger.info("Processing file: {}", fileName);
 
         List<Vehicle> vehicles = new ArrayList<>();
 
-        if (fileName.endsWith(".csv")) {
-            // Handle CSV file
-            try (InputStream inputStream = file.getInputStream();
-                 CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
+        try (InputStream inputStream = file.getInputStream();
+             CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
 
-                String[] headers = csvReader.readNext(); // Read header row
-                logger.info("CSV Headers: {}", Arrays.toString(headers));
+            String[] headers = csvReader.readNext(); // Read header row
+            logger.info("CSV Headers: {}", Arrays.toString(headers));
 
-                String[] row;
-                while ((row = csvReader.readNext()) != null) {
-                    logger.info("Processing row: {}", Arrays.toString(row));
-                    Vehicle vehicle = new Vehicle();
-                    for (int i = 0; i < headers.length; i++) {
-                        String header = headers[i];
-                        String value = row[i];
+            String[] row;
+            while ((row = csvReader.readNext()) != null) {
+                logger.info("Processing row: {}", Arrays.toString(row));
+                Vehicle vehicle = new Vehicle();
+                for (int i = 0; i < headers.length; i++) {
+                    String header = headers[i];
+                    String value = row[i];
 
-                        Field field = Vehicle.class.getDeclaredField(header);
-                        field.setAccessible(true);
-                        field.set(vehicle, parseValue(field, value));
-                    }
-                    vehicles.add(vehicle);
+                    Field field = Vehicle.class.getDeclaredField(header);
+                    field.setAccessible(true);
+                    field.set(vehicle, parseValue(field, value));
                 }
+                vehicles.add(vehicle);
             }
-        } else if (fileName.endsWith(".xls") || fileName.endsWith(".xlsx")) {
-            // Handle Excel file
-            try (InputStream inputStream = file.getInputStream();
-                 Workbook workbook = fileName.endsWith(".xlsx") ? new XSSFWorkbook(inputStream) : new HSSFWorkbook(inputStream)) {
-
-                Sheet sheet = workbook.getSheetAt(0);
-                Row headerRow = sheet.getRow(0); // First row contains headers
-                logger.info("Excel Headers: {}", getRowData(headerRow));
-
-                for (int i = 1; i <= sheet.getLastRowNum(); i++) { // Skip header row
-                    Row row = sheet.getRow(i);
-                    logger.info("Processing row: {}", getRowData(row));
-                    Vehicle vehicle = new Vehicle();
-
-                    for (int j = 0; j < headerRow.getLastCellNum(); j++) {
-                        String header = headerRow.getCell(j).getStringCellValue();
-                        Cell cell = row.getCell(j);
-
-                        Field field = Vehicle.class.getDeclaredField(header);
-                        field.setAccessible(true);
-                        field.set(vehicle, parseCellValue(field, cell));
-                    }
-                    vehicles.add(vehicle);
-                }
-            }
-        } else {
-            throw new IllegalArgumentException("Unsupported file format. Please upload a CSV, XLS, or XLSX file.");
         }
 
         logger.info("Saving {} vehicles to the database.", vehicles.size());

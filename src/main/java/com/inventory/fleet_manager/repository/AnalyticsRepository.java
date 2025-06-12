@@ -21,11 +21,12 @@ public class AnalyticsRepository {
 
     public List<MonthlySalesResponse> getMonthlySalesReport(Map<String, String> filters) {
         StringBuilder queryBuilder = new StringBuilder(
-                "SELECT v.model, v.location, v.tkm_invoice_value, o.order_date " +
+                "SELECT v.make, v.model, v.purchase_dealer, v.chassis_number, v.engine_number, v.key_number,  v.location, v.tkm_invoice_value, v.interest, v.vehicle_status, o.order_date " +
                         "FROM vehicle v " +
                         "JOIN orders o ON v.id = o.vehicle_id " +
-                        "WHERE o.order_date BETWEEN :startDate AND :endDate "
+                        "WHERE DATE(o.order_date) BETWEEN :startDate AND :endDate  AND v.vehicle_status = 'SOLD'"
         );
+
         // Add optional filters
         if (filters.containsKey("model") && filters.get("model") != null && !filters.get("model").isEmpty()) {
             queryBuilder.append("AND v.model = :model ");
@@ -53,17 +54,30 @@ public class AnalyticsRepository {
         }
 
         List<Object[]> results = nativeQuery.getResultList();
+
         return results.stream()
                 .map(result -> {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-                    LocalDateTime dateTime = LocalDateTime.parse(result[3].toString(), formatter);
-                    LocalDate orderDate = dateTime.toLocalDate();
-                    return new MonthlySalesResponse(
-                            result[0].toString(), // model
-                            orderDate, // order_date
-                            result[1].toString(), // location
-                            Double.parseDouble(result[2].toString()) // invoice_value
-                    );
+                    MonthlySalesResponse response = new MonthlySalesResponse();
+                    for (int i = 0; i < result.length; i++) {
+                        switch (i) {
+                            case 0 -> response.setMake(result[i].toString());
+                            case 1 -> response.setModel(result[i].toString());
+                            case 2 -> response.setPurchaseDealer(result[i].toString());
+                            case 3 -> response.setChassisNumber(result[i].toString());
+                            case 4 -> response.setEngineNumber(result[i].toString());
+                            case 5 -> response.setKeyNumber(result[i].toString());
+                            case 6 -> response.setLocation(result[i].toString());
+                            case 7 -> response.setInvoiceValue(Double.parseDouble(String.valueOf(Double.parseDouble(result[i].toString()))));
+                            case 8 -> response.setInterest(String.valueOf(Double.parseDouble(result[i].toString())));
+                            case 9 -> response.setStatus(result[i].toString());
+                            case 10 -> {
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                                LocalDateTime dateTime = LocalDateTime.parse(result[i].toString(), formatter);
+                                response.setOrderDate(dateTime.toLocalDate());
+                            }
+                        }
+                    }
+                    return response;
                 })
                 .toList();
     }

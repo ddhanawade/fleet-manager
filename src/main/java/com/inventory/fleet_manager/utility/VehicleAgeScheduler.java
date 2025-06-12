@@ -76,8 +76,8 @@ public class VehicleAgeScheduler {
                         continue;
                     }
                     try {
-                        if (vehicle.getAge() != null && vehicle.getTkmInvoiceValue() != null) {
-                            String interest = VehicleUtils.calculateInterest(vehicle.getTkmInvoiceValue(), vehicle.getAge());
+                        if (vehicle.getAge() != null && vehicle.getInvoiceValue() != null) {
+                            String interest = VehicleUtils.calculateInterest(vehicle.getInvoiceValue(), vehicle.getAge());
                             vehicle.setInterest(interest);
                             vehicleService.updateVehicle(vehicle.getId(), vehicle);
                         }
