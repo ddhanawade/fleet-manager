@@ -1,5 +1,6 @@
 package com.inventory.fleet_manager.service;
 
+import com.inventory.fleet_manager.dto.ModelInfoDTO;
 import com.inventory.fleet_manager.dto.VehicleDTO;
 import com.inventory.fleet_manager.dto.VehicleOrderResponse;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;

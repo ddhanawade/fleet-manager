@@ -1,5 +1,6 @@
 package com.inventory.fleet_manager.repository;
 
+import com.inventory.fleet_manager.dto.ModelInfoDTO;
 import com.inventory.fleet_manager.dto.VehicleOrderResponse;
 import com.inventory.fleet_manager.model.Vehicle;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -21,6 +22,12 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpec
             "o.orderId, o.customerName, o.phoneNumber, o.leadName, o.salesPersonName, " +
             "o.orderDate, o.deliveryDate, o.financerName, o.financeType, o.remarks, " +
             "o.createdAt, o.updatedAt, o.createdBy, o.updatedBy, o.orderStatus) " +
-            "FROM Vehicle v JOIN Order o ON v.id = o.vehicleId WHERE v.model = :model")
+            "FROM Vehicle v LEFT JOIN Order o ON v.id = o.vehicleId WHERE v.model = :model")
     List<VehicleOrderResponse> findVehicleAndOrderDetailsByModel(@Param("model") String model);
+
+    @Query(value = """
+        SELECT id, make, model 
+        FROM model_info
+        """, nativeQuery = true)
+    List<ModelInfoDTO> findAllModelInfo();
 }

@@ -1,11 +1,13 @@
 package com.inventory.fleet_manager.controller;
 
+import com.inventory.fleet_manager.dto.ModelInfoDTO;
 import com.inventory.fleet_manager.dto.VehicleDTO;
 import com.inventory.fleet_manager.dto.VehicleOrderResponse;
 import com.inventory.fleet_manager.enums.status;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Vehicle;
+import com.inventory.fleet_manager.service.ModelService;
 import com.inventory.fleet_manager.service.VehicleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,11 @@ import java.util.Map;
 @RequestMapping("/api/vehicles")
 public class VehicleController {
     private final VehicleService vehicleService;
+    private final ModelService modelService;
 
-    public VehicleController(VehicleService vehicleService, VehicleMapper vehicleMapper) {
+    public VehicleController(VehicleService vehicleService, VehicleMapper vehicleMapper, ModelService modelService) {
         this.vehicleService = vehicleService;
+        this.modelService = modelService;
     }
 
     @GetMapping
@@ -80,5 +84,11 @@ public class VehicleController {
     @GetMapping("/vehiclesAndOrderDetailsByModel")
     public List<VehicleOrderResponse> getVehicleAndOrderDetailsByModel(@RequestParam String model) {
         return vehicleService.getVehicleAndOrderDetailsByModel(model);
+    }
+
+    @GetMapping("/model-info")
+    public ResponseEntity<List<ModelInfoDTO>> getAllModelInfo() {
+        List<ModelInfoDTO> modelInfoList = modelService.getAllModelInfo();
+        return new ResponseEntity<>(modelInfoList, HttpStatus.OK);
     }
 }
