@@ -21,7 +21,7 @@ public class AnalyticsRepository {
 
     public List<MonthlySalesResponse> getMonthlySalesReport(Map<String, String> filters) {
         StringBuilder queryBuilder = new StringBuilder(
-                "SELECT v.make, v.model, v.purchase_dealer, v.chassis_number, v.engine_number, v.key_number,  v.location, v.tkm_invoice_value, v.interest, v.vehicle_status, o.order_date " +
+                "SELECT v.make, v.model, v.purchase_dealer, v.chassis_number, v.engine_number, v.key_number,  v.location, v.invoice_value, v.interest, v.vehicle_status, o.order_date " +
                         "FROM vehicle v " +
                         "JOIN orders o ON v.id = o.vehicle_id " +
                         "WHERE DATE(o.order_date) BETWEEN :startDate AND :endDate  AND v.vehicle_status = 'SOLD'"
