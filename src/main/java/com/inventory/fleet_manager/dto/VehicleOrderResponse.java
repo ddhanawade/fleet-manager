@@ -1,21 +1,18 @@
-package com.inventory.fleet_manager.model;
+package com.inventory.fleet_manager.dto;
 
+import com.inventory.fleet_manager.enums.orderStatus;
 import com.inventory.fleet_manager.enums.status;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Vehicle {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class VehicleOrderResponse {
+    private Long vehicleId;
     private String make;
     private String model;
     private String grade;
@@ -26,7 +23,6 @@ public class Vehicle {
     private String engineNumber;
     private String keyNumber;
     private String location;
-    @Enumerated(EnumType.STRING)
     private status vehicleStatus;
     private Date receivedDate;
     private Date invoiceDate;
@@ -35,6 +31,23 @@ public class Vehicle {
     private String manufactureDate;
     private String suffix;
     private String invoiceValue;
-    private  Integer age;
+    private Integer age;
     private String interest;
+
+    // Fields from Order table
+    private Long orderId;
+    private String customerName;
+    private String phoneNumber;
+    private String leadName;
+    private String salesPersonName;
+    private Date orderDate;
+    private Date deliveryDate;
+    private String financerName;
+    private String financeType;
+    private String remarks;
+    private Date createdAt;
+    private Date updatedAt;
+    private String createdBy;
+    private String updatedBy;
+    private orderStatus orderStatus;
 }

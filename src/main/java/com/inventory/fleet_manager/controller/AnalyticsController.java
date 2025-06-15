@@ -1,12 +1,14 @@
 package com.inventory.fleet_manager.controller;
 
 import com.inventory.fleet_manager.dto.AnalyticsResponse;
+import com.inventory.fleet_manager.dto.MonthlySalesRequest;
+import com.inventory.fleet_manager.dto.MonthlySalesResponse;
 import com.inventory.fleet_manager.service.AnalyticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -16,56 +18,37 @@ public class AnalyticsController {
     @Autowired
     private AnalyticsService analyticsService;
 
-    @GetMapping("/monthly-sales")
-    public AnalyticsResponse getMonthlySalesReport(
-            @RequestParam String dateRange,
-            @RequestParam String city,
-            @RequestParam(required = false) String make,
-            @RequestParam(required = false) String model) {
-        // Parse dateRange into startDate and endDate
-        String[] dates = dateRange.split("_to_");
-        if (dates.length != 2) {
-            throw new IllegalArgumentException("Invalid dateRange format");
+    @PostMapping("/monthly-sales")
+    public List<MonthlySalesResponse> getMonthlySalesReport(@RequestBody MonthlySalesRequest request) {
+        // Validate required fields
+        if (request.getStartDate() == null || request.getEndDate() == null) {
+            throw new IllegalArgumentException("Start date and end date are required parameters");
         }
-        LocalDate startDateParsed = LocalDate.parse(dates[0]);
-        LocalDate endDateParsed = LocalDate.parse(dates[1]);
+        if (request.getStartDate().isAfter(request.getEndDate())) {
+            throw new IllegalArgumentException("Start date must be less than end date");
+        }
+        return analyticsService.getMonthlySales(request);
+    }
 
-        if (startDateParsed.isAfter(endDateParsed)) {
+    @GetMapping("/top-model-sold")
+    public AnalyticsResponse getTopModelSold(@RequestBody MonthlySalesRequest request) {
+        // Validate required fields
+        if (request.getStartDate() == null || request.getEndDate() == null) {
+            throw new IllegalArgumentException("Start date and end date are required parameters");
+        }
+        if (request.getStartDate().isAfter(request.getEndDate())) {
             throw new IllegalArgumentException("Start date must be less than end date");
         }
 
         Map<String, String> filters = new HashMap<>();
-        filters.put("startDate", startDateParsed.toString());
-        filters.put("endDate", endDateParsed.toString());
-        filters.put("city", city);
-        if (make != null && !make.isEmpty()) {
-            filters.put("brandName", make);
+        filters.put("startDate", String.valueOf(request.getStartDate()));
+        filters.put("endDate", String.valueOf(request.getEndDate()));
+        filters.put("city", request.getCity());
+        if (request.getMake() != null && !request.getMake().isEmpty()) {
+            filters.put("make", request.getMake());
         }
-        if (model != null && !model.isEmpty()) {
-            filters.put("modelName", model);
-        }
-
-        return analyticsService.getMonthlySales(filters);
-    }
-
-    @GetMapping("/top-model-sold")
-    public AnalyticsResponse getTopModelSold(
-            @RequestParam(required = true) String startDate,
-            @RequestParam(required = true) String endDate,
-            @RequestParam(required = true) String city,
-            @RequestParam(required = false) String make,
-            @RequestParam(required = false) String model) {
-
-        Map<String, String> filters = new HashMap<>();
-        filters.put("startDate", startDate);
-        filters.put("endDate", endDate);
-        filters.put("city", city);
-
-        if (make != null && !make.isEmpty()) {
-            filters.put("make", make);
-        }
-        if (model != null && !model.isEmpty()) {
-            filters.put("model", model);
+        if (request.getModel() != null && !request.getModel().isEmpty()) {
+            filters.put("model", request.getModel());
         }
 
         return analyticsService.getTopModelSold(filters);

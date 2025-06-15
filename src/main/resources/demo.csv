@@ -1,0 +1,4 @@
+make,model,grade,fuelType,exteriorColor,interiorColor,chassisNumber,engineNumber,keyNumber,location,vehicleStatus,receivedDate,invoiceDate,invoiceNumber,purchaseDealer,manufactureDate,suffix,tkmInvoiceValue,age,interest
+Toyota,Corolla,Standard,Petrol,White,Black,CH12345,EN67890,KY001,New York,Active,2023-01-15,2023-01-10,INV12345,Dealer A,2022-12-01,SFX001,20000,1,5%
+Honda,Civic,Premium,Diesel,Red,Grey,CH54321,EN09876,KY002,Los Angeles,Inactive,2023-02-20,2023-02-15,INV54321,Dealer B,2022-11-15,SFX002,25000,2,4.5%
+Ford,Focus,Standard,Hybrid,Blue,Beige,CH67890,EN12345,KY003,Chicago,Pending,2023-03-10,2023-03-05,INV67890,Dealer C,2022-10-20,SFX003,22000,3,4%

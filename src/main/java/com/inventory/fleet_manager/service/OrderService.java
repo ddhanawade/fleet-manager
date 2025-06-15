@@ -1,9 +1,12 @@
 package com.inventory.fleet_manager.service;
 
 import com.inventory.fleet_manager.dto.OrderDTO;
+import com.inventory.fleet_manager.enums.orderStatus;
+import com.inventory.fleet_manager.enums.status;
 import com.inventory.fleet_manager.mapper.OrderMapper;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Order;
+import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,10 @@ public class OrderService {
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = orderMapper.toEntity(orderDTO);
+
+        order.setOrderDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+        order.setCreatedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+
         Order savedOrder = orderRepository.save(order);
         return orderMapper.toDTO(savedOrder);
     }
@@ -67,8 +74,12 @@ public class OrderService {
         if (orderDTO.getRemarks() != null && !orderDTO.getRemarks().isBlank()) {
             order.setRemarks(orderDTO.getRemarks());
         }
-        if (orderDTO.getStatus() != null && !orderDTO.getStatus().isBlank()) {
-            order.setStatus(orderDTO.getStatus());
+        if (orderDTO.getOrderStatus() != null) {
+            try {
+                order.setOrderStatus(orderStatus.valueOf(orderDTO.getOrderStatus().name()));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid status value: " + orderDTO.getOrderStatus());
+            }
         }
         if (orderDTO.getDeliveryDate() != null ) {
             order.setDeliveryDate(orderDTO.getDeliveryDate());

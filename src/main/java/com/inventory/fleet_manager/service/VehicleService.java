@@ -1,17 +1,33 @@
 package com.inventory.fleet_manager.service;
 
+import com.inventory.fleet_manager.dto.ModelInfoDTO;
 import com.inventory.fleet_manager.dto.VehicleDTO;
+import com.inventory.fleet_manager.dto.VehicleOrderResponse;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.repository.VehicleRepository;
 import com.inventory.fleet_manager.utility.VehicleUtils;
+import com.opencsv.CSVReader;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -19,9 +35,12 @@ import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.io.InputStreamReader;
 
 @Service
+@Slf4j
 public class VehicleService {
+    private static final Logger logger = LoggerFactory.getLogger(VehicleService.class);
 
     private final VehicleRepository vehicleRepository;
 
@@ -47,10 +66,6 @@ public class VehicleService {
         List<CompletableFuture<VehicleDTO>> futures = vehicles.stream()
                 .map(vehicle -> CompletableFuture.supplyAsync(() -> {
                             VehicleDTO dto = vehicleMapper.toDTO(vehicle); // Ensure vehicleMapper is thread-safe
-
-                            // Calculate and set age
-                            Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
-                            dto.setAge(age);
 
                             return dto;
                         }, executorService) // Use custom executor
@@ -81,17 +96,13 @@ public class VehicleService {
         System.out.println("Execution time with threading: " + (endWithThreading - startWithThreading) / 1_000_000 + " ms");
     }
 
-    private List<VehicleDTO> getAllVehiclesWithoutThreading() {
+    public List<VehicleDTO> getAllVehiclesWithoutThreading() {
         List<Vehicle> vehicles = vehicleRepository.findAll();
 
         // Process each vehicle synchronously
         return vehicles.stream()
                 .map(vehicle -> {
                     VehicleDTO dto = vehicleMapper.toDTO(vehicle); // Ensure vehicleMapper is thread-safe
-
-                    // Calculate and set age
-                    Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate())); // Ensure thread safety
-                    dto.setAge(age);
 
                     return dto;
                 })
@@ -121,41 +132,74 @@ public class VehicleService {
                 .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with id: " + id));
 
         // Update only the fields provided in the DTO
-        if (vehicleDTO.getMake() != null) {
+        if (vehicleDTO.getMake() != null && !vehicleDTO.getMake().equals(existingVehicle.getMake())) {
             existingVehicle.setMake(vehicleDTO.getMake());
         }
-        if (vehicleDTO.getModel() != null) {
-            existingVehicle.setModel(vehicleDTO.getModel());
+        if (vehicleDTO.getModel() != null && !vehicleDTO.getModel().equals(existingVehicle.getModel())) {
+            existingVehicle.setModel(vehicleDTO.getModel().toUpperCase());
         }
-        if (vehicleDTO.getGrade() != null) {
+        if (vehicleDTO.getGrade() != null && !vehicleDTO.getGrade().equals(existingVehicle.getGrade())) {
             existingVehicle.setGrade(vehicleDTO.getGrade());
         }
-        if (vehicleDTO.getFuelType() != null) {
+        if (vehicleDTO.getFuelType() != null && !vehicleDTO.getFuelType().equals(existingVehicle.getFuelType())) {
             existingVehicle.setFuelType(vehicleDTO.getFuelType());
         }
-        if (vehicleDTO.getExteriorColor() != null) {
+        if (vehicleDTO.getExteriorColor() != null && !vehicleDTO.getExteriorColor().equals(existingVehicle.getExteriorColor())) {
             existingVehicle.setExteriorColor(vehicleDTO.getExteriorColor());
         }
-        if (vehicleDTO.getInteriorColor() != null) {
+        if (vehicleDTO.getInteriorColor() != null && !vehicleDTO.getInteriorColor().equals(existingVehicle.getInteriorColor())) {
             existingVehicle.setInteriorColor(vehicleDTO.getInteriorColor());
         }
-        if (vehicleDTO.getLocation() != null) {
+        if (vehicleDTO.getLocation() != null && !vehicleDTO.getLocation().equals(existingVehicle.getLocation())) {
             existingVehicle.setLocation(vehicleDTO.getLocation());
         }
-        if (vehicleDTO.getStatus() != null) {
-            existingVehicle.setStatus(vehicleDTO.getStatus());
+        if (vehicleDTO.getVehicleStatus() != null) {
+            try {
+                existingVehicle.setVehicleStatus(vehicleDTO.getVehicleStatus());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid vehicle status value: " + vehicleDTO.getVehicleStatus());
+            }
         }
-        if (vehicleDTO.getChassisNumber() != null) {
+        if (vehicleDTO.getChassisNumber() != null && !vehicleDTO.getChassisNumber().equals(existingVehicle.getChassisNumber())) {
             existingVehicle.setChassisNumber(vehicleDTO.getChassisNumber());
         }
-        if (vehicleDTO.getEngineNumber() != null) {
+        if (vehicleDTO.getEngineNumber() != null && !vehicleDTO.getEngineNumber().equals(existingVehicle.getEngineNumber())) {
             existingVehicle.setEngineNumber(vehicleDTO.getEngineNumber());
         }
-        if (vehicleDTO.getKeyNumber() != null) {
+        if (vehicleDTO.getKeyNumber() != null && !vehicleDTO.getKeyNumber().equals(existingVehicle.getKeyNumber())) {
             existingVehicle.setKeyNumber(vehicleDTO.getKeyNumber());
         }
+        if (vehicleDTO.getInvoiceDate() != null && !vehicleDTO.getInvoiceDate().equals(existingVehicle.getInvoiceDate())) {
+            existingVehicle.setInvoiceDate(vehicleDTO.getInvoiceDate());
+        }
+        if (vehicleDTO.getInvoiceNumber() != null && !vehicleDTO.getInvoiceNumber().equals(existingVehicle.getInvoiceNumber())) {
+            existingVehicle.setInvoiceNumber(vehicleDTO.getInvoiceNumber());
+        }
+        if (vehicleDTO.getPurchaseDealer() != null && !vehicleDTO.getPurchaseDealer().equals(existingVehicle.getPurchaseDealer())) {
+            existingVehicle.setPurchaseDealer(vehicleDTO.getPurchaseDealer());
+        }
+        if (vehicleDTO.getManufactureDate() != null && !vehicleDTO.getManufactureDate().equals(existingVehicle.getManufactureDate())) {
+            existingVehicle.setManufactureDate(vehicleDTO.getManufactureDate());
+        }
+        if (vehicleDTO.getSuffix() != null && !vehicleDTO.getSuffix().equals(existingVehicle.getSuffix())) {
+            existingVehicle.setSuffix(vehicleDTO.getSuffix());
+        }
+        if (vehicleDTO.getInvoiceValue() != null && !vehicleDTO.getInvoiceValue().equals(existingVehicle.getInvoiceValue())) {
+            existingVehicle.setInvoiceValue(vehicleDTO.getInvoiceValue());
+        }
         if (vehicleDTO.getReceivedDate() != null) {
-            existingVehicle.setReceivedDate(vehicleDTO.getReceivedDate());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = dateFormat.format(vehicleDTO.getReceivedDate()); // Convert Date to String
+            LocalDate receivedDate = LocalDate.parse(formattedDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")); // Parse to LocalDate
+            if (!receivedDate.equals(existingVehicle.getReceivedDate())) {
+                existingVehicle.setReceivedDate(java.sql.Date.valueOf(receivedDate)); // Convert LocalDate to java.sql.Date
+            }
+        }
+        if (vehicleDTO.getAge() != null && !vehicleDTO.getAge().equals(existingVehicle.getAge())) {
+            existingVehicle.setAge(vehicleDTO.getAge());
+        }
+        if (vehicleDTO.getInterest() != null && !vehicleDTO.getInterest().equals(existingVehicle.getInterest())) {
+            existingVehicle.setInterest(vehicleDTO.getInterest());
         }
 
         // Save the updated entity
@@ -205,7 +249,7 @@ public class VehicleService {
                 .collect(Collectors.groupingBy(
                         Vehicle::getModel,
                         Collectors.groupingBy(vehicle -> {
-                            Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getReceivedDate()));
+                            Integer age = VehicleUtils.calculateVehicleAge(String.valueOf(vehicle.getInvoiceDate()));
                             if (age == null) {
                                 return "Unknown";
                             } else if (age < 30) {
@@ -232,5 +276,126 @@ public class VehicleService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public void saveVehiclesFromFile(MultipartFile file) throws Exception {
+        String fileName = file.getOriginalFilename();
+        if (fileName.isBlank()  || !fileName.endsWith(".csv")) {
+            throw new IllegalArgumentException("Invalid file format. Please upload a CSV file.");
+        }
+
+        logger.info("Processing file: {}", fileName);
+
+        List<Vehicle> vehicles = new ArrayList<>();
+
+        try (InputStream inputStream = file.getInputStream();
+             CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
+
+            String[] headers = csvReader.readNext(); // Read header row
+            logger.info("CSV Headers: {}", Arrays.toString(headers));
+
+            String[] row;
+            while ((row = csvReader.readNext()) != null) {
+                logger.info("Processing row: {}", Arrays.toString(row));
+                Vehicle vehicle = new Vehicle();
+                for (int i = 0; i < headers.length; i++) {
+                    String header = headers[i];
+                    String value = row[i];
+
+                    Field field = Vehicle.class.getDeclaredField(header);
+                    field.setAccessible(true);
+                    field.set(vehicle, parseValue(field, value));
+                }
+                vehicles.add(vehicle);
+            }
+        }
+
+        logger.info("Saving {} vehicles to the database.", vehicles.size());
+        vehicleRepository.saveAll(vehicles);
+    }
+
+    private String getRowData(Row row) {
+        if (row == null) {
+            return "null";
+        }
+        StringBuilder rowData = new StringBuilder();
+        for (int i = 0; i < row.getLastCellNum(); i++) {
+            Cell cell = row.getCell(i);
+            rowData.append(cell != null ? cell.toString() : "null").append(", ");
+        }
+        return rowData.toString();
+    }
+
+    private Object parseValue(Field field, String value) throws Exception {
+        if (field.getType().isEnum()) {
+            @SuppressWarnings("unchecked")
+            Class<? extends Enum> enumType = (Class<? extends Enum>) field.getType();
+            return Enum.valueOf(enumType, value.trim().toUpperCase());
+        } else if (field.getType().equals(Double.class)) {
+            return Double.parseDouble(value);
+        } else if (field.getType().equals(Integer.class)) {
+            return Integer.parseInt(value);
+        } else if (field.getType().equals(Boolean.class)) {
+            return Boolean.parseBoolean(value);
+        } else if (field.getType().equals(Date.class)) {
+            List<String> dateFormats = Arrays.asList("yyyy-MM-dd", "MM/dd/yyyy", "dd-MM-yyyy", "dd/MM/yyyy");
+            for (String format : dateFormats) {
+                try {
+                    logger.info("Attempting to parse value '{}' with format '{}'", value, format);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+                    dateFormat.setLenient(false); // Strict parsing
+                    Date parsedDate = dateFormat.parse(value.trim());
+                    logger.info("Successfully parsed value '{}' as date '{}'", value, parsedDate);
+                    // Convert to the desired format (e.g., yyyy-MM-dd)
+                    SimpleDateFormat desiredFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    return desiredFormat.parse(desiredFormat.format(parsedDate));
+                } catch (Exception ignored) {
+                    logger.warn("Failed to parse value '{}' with format '{}'", value, format);
+                }
+            }
+            throw new IllegalArgumentException("Invalid date format for field: " + field.getName());
+        } else {
+            return value; // Default to String
+        }
+    }
+
+    private Object parseCellValue(Field field, Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                if (field.getType().equals(Integer.class)) {
+                    return (int) cell.getNumericCellValue();
+                } else {
+                    return cell.getNumericCellValue();
+                }
+            case BOOLEAN:
+                return cell.getBooleanCellValue();
+            default:
+                return null;
+        }
+    }
+
+    public List<VehicleOrderResponse> getVehicleAndOrderDetailsByModel(String model) {
+        try {
+            log.info("Entering getVehicleAndOrderDetailsByModel with model: {}", model);
+            if (model == null || model.trim().isEmpty()) {
+                throw new IllegalArgumentException("Model parameter cannot be null or empty");
+            }
+            List<VehicleOrderResponse> response = vehicleRepository.findVehicleAndOrderDetailsByModel(model);
+            log.info("Successfully retrieved vehicle and order details for model: {}", model);
+            return response;
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid input for model: {}", model, e);
+            throw e;
+        } catch (RuntimeException e) {
+            log.error("Unexpected error occurred while fetching vehicle and order details for model: {}", model, e);
+            throw e;
+        } finally {
+            log.info("Exiting getVehicleAndOrderDetailsByModel");
+        }
     }
 }

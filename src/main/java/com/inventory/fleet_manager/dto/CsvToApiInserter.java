@@ -15,7 +15,7 @@ public class CsvToApiInserter {
     private static final String API_URL = "http://localhost:8080/api/vehicles";
 
     public static void main(String[] args) {
-        String csvFilePath = "/Users/prai4/Desktop/Backend 2/fleet-manager/src/main/resources/vehicleStock.csv"; // Path to your CSV file
+        String csvFilePath = "/Users/ddhanawade/Desktop/Backend-Project/fleet-manager/src/main/resources/vehicleStock.csv"; // Path to your CSV file
         try {
             // Read CSV file and map to VehicleDTO objects
             List<VehicleDTO> vehicles = readCsvToVehicleDTO(csvFilePath);
@@ -51,7 +51,7 @@ public class CsvToApiInserter {
                 .addColumn("engineNumber")
                 .addColumn("keyNumber")
                 .addColumn("location")
-                .addColumn("tkmInvoiceValue")
+                .addColumn("invoiceValue")
                 .addColumn("age")
                 .addColumn("interest")
                 .addColumn("status")

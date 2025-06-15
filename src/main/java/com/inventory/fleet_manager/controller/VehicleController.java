@@ -1,26 +1,31 @@
 package com.inventory.fleet_manager.controller;
 
+import com.inventory.fleet_manager.dto.ModelInfoDTO;
 import com.inventory.fleet_manager.dto.VehicleDTO;
+import com.inventory.fleet_manager.dto.VehicleOrderResponse;
+import com.inventory.fleet_manager.enums.status;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Vehicle;
+import com.inventory.fleet_manager.service.ModelService;
 import com.inventory.fleet_manager.service.VehicleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/vehicles")
-//@CrossOrigin(origins = "http://inventory-management-client.s3-website.us-east-2.amazonaws.com")
-@CrossOrigin(origins = "http://localhost:4200")
 public class VehicleController {
     private final VehicleService vehicleService;
+    private final ModelService modelService;
 
-    public VehicleController(VehicleService vehicleService, VehicleMapper vehicleMapper) {
+    public VehicleController(VehicleService vehicleService, VehicleMapper vehicleMapper, ModelService modelService) {
         this.vehicleService = vehicleService;
+        this.modelService = modelService;
     }
 
     @GetMapping
@@ -65,4 +70,25 @@ public class VehicleController {
         return new ResponseEntity<>(ageCountByModel, HttpStatus.OK);
     }
 
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, String>> uploadExcelFile(@RequestParam("file") MultipartFile file) {
+        try {
+            vehicleService.saveVehiclesFromFile(file);
+            Map<String, String> response = Map.of("message", "File uploaded and data saved successfully.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = Map.of("error", "Error processing file: " + e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+    @GetMapping("/vehiclesAndOrderDetailsByModel")
+    public List<VehicleOrderResponse> getVehicleAndOrderDetailsByModel(@RequestParam String model) {
+        return vehicleService.getVehicleAndOrderDetailsByModel(model);
+    }
+
+    @GetMapping("/model-info")
+    public ResponseEntity<List<ModelInfoDTO>> getAllModelInfo() {
+        List<ModelInfoDTO> modelInfoList = modelService.getAllModelInfo();
+        return new ResponseEntity<>(modelInfoList, HttpStatus.OK);
+    }
 }
