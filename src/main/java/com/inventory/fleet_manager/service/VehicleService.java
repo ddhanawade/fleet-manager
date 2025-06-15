@@ -338,7 +338,7 @@ public class VehicleService {
         } else if (field.getType().equals(Boolean.class)) {
             return Boolean.parseBoolean(value);
         } else if (field.getType().equals(Date.class)) {
-            List<String> dateFormats = Arrays.asList("yyyy-MM-dd", "MM/dd/yyyy", "dd-MM-yyyy", "dd/MM/yyyy");
+            List<String> dateFormats = Arrays.asList("yyyy-MM-dd", "MM/dd/yyyy", "dd-MM-yyyy", "dd/MM/yyyy","dd/MM/yy");
             for (String format : dateFormats) {
                 try {
                     logger.info("Attempting to parse value '{}' with format '{}'", value, format);
