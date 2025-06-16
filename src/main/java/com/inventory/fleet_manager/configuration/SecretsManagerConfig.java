@@ -1,5 +1,6 @@
 package com.inventory.fleet_manager.configuration;
 
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.inventory.fleet_manager.dto.AwsSecrets;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -50,6 +51,7 @@ public class SecretsManagerConfig {
 
         AWSSecretsManager client = AWSSecretsManagerClientBuilder.standard()
                 .withRegion(region)
+                .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
                 .build();
 
         String secret, decodedBinarySecret;
