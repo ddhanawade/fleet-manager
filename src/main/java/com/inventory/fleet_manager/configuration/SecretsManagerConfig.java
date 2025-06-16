@@ -21,10 +21,10 @@ import org.springframework.context.annotation.Profile;
 @Profile("prd")
 public class SecretsManagerConfig {
 
-    @Value("${cloud.aws.credentials.access-key}")
-    private String accessKey;
-    @Value("${cloud.aws.credentials.secret-key}")
-    private String secretkey;
+//    @Value("${cloud.aws.credentials.access-key}")
+//    private String accessKey;
+//    @Value("${cloud.aws.credentials.secret-key}")
+//    private String secretkey;
 
 
     private Gson gson = new Gson();
@@ -50,7 +50,6 @@ public class SecretsManagerConfig {
 
         AWSSecretsManager client = AWSSecretsManagerClientBuilder.standard()
                 .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretkey)))
                 .build();
 
         String secret, decodedBinarySecret;
