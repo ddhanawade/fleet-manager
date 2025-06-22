@@ -18,11 +18,11 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Expose the port your Spring Boot application runs on
-EXPOSE 8080
+EXPOSE 8081
 
 # Add a health check (optional)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:8080/actuator/health || exit 1
+  CMD curl -f http://localhost:8081/actuator/health || exit 1
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

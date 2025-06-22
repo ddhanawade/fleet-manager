@@ -1,0 +1,17 @@
+services:
+  fleet-manager:
+    build:
+      context: .  # Assuming your Dockerfile is in the current directory
+    container_name: fleet-manager
+    restart: unless-stopped
+    environment:
+      - SPRING_PROFILES_ACTIVE=prd
+      - SERVER_PORT=8081
+    ports:
+      - "8081:8081"
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
