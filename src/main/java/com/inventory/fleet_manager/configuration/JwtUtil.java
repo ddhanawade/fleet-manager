@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Component
+
+@Component("jwtUtilConfiguration")
 public class JwtUtil {
 
     private static final String SECRET_KEY = "aP9!x@3#L$z%7^&*kQwE8rT6uYhJ"; // Replace with a strong secret key

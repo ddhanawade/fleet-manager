@@ -1,11 +1,12 @@
 package com.inventory.fleet_manager.configuration;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -14,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -44,5 +46,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+    }
+
+    @Configuration
+    public static class AsyncConfig {
+
+        @Bean(name = "taskExecutor")
+        public Executor taskExecutor() {
+            ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+            executor.setCorePoolSize(5); // Minimum number of threads
+            executor.setMaxPoolSize(10); // Maximum number of threads
+            executor.setQueueCapacity(25); // Queue size
+            executor.setThreadNamePrefix("AsyncThread-");
+            executor.initialize();
+            return executor;
+        }
     }
 }
