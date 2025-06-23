@@ -48,4 +48,26 @@ public class City {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    public static final class Builder{
+        private Long id;
+        private String name;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public City build() {
+            City city = new City();
+            city.setId(this.id);
+            city.setName(this.name);
+            return city;
+        }
+    }
 }
