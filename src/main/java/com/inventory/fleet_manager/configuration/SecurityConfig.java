@@ -47,34 +47,64 @@ public class SecurityConfig {
 //
 //        return http.build();
 //    }
+//
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
+//        System.out.println("corsProperties.getAllowedOrigins() = " + corsProperties.getAllowedOrigins());
+//        http.csrf(csrf -> csrf.disable())
+//                .cors(cors -> cors.configurationSource(request -> {
+//                    var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+////                    corsConfig.setAllowedOrigins(corsProperties.getAllowedOrigins());
+//                    corsConfig.setAllowedOrigins(List.of("*"));
+//                    corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//                    corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+////                    corsConfig.setAllowCredentials(true);
+//                    return corsConfig;
+//                }))
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/auth/login", "/auth/register", "/auth/*","/start-async-task").permitAll() // Allow /auth/{username}
+//                        .requestMatchers("/auth/**").authenticated()
+//                        .anyRequest().authenticated()
+//                ).logout(logout -> logout
+//                        .logoutUrl("/auth/logout") // Define logout URL
+//                        .logoutSuccessHandler((request, response, authentication) -> {
+//                            response.setStatus(200);
+//                            response.getWriter().write("Logout successful");
+//                        })
+//                )
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//
+//        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//        return http.build();
+//    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("corsProperties.getAllowedOrigins() = " + corsProperties.getAllowedOrigins());
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-//                    corsConfig.setAllowedOrigins(corsProperties.getAllowedOrigins());
-                    corsConfig.setAllowedOrigins(List.of("*"));
+                    corsConfig.setAllowedOrigins(corsProperties.getAllowedOrigins());
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-//                    corsConfig.setAllowCredentials(true);
+                    corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type", "*"));
+                    corsConfig.setAllowCredentials(true);
                     return corsConfig;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register", "/auth/*","/start-async-task").permitAll() // Allow /auth/{username}
-                        .requestMatchers("/auth/**").authenticated()
-                        .anyRequest().authenticated()
-                ).logout(logout -> logout
+                        .requestMatchers("/auth/login", "/auth/register", "/auth/*", "/start-async-task").permitAll() // Allow specific endpoints
+                        .requestMatchers("/auth/**").authenticated() // Authenticate other /auth endpoints
+                        .anyRequest().authenticated() // Secure all other endpoints
+                )
+                .logout(logout -> logout
                         .logoutUrl("/auth/logout") // Define logout URL
                         .logoutSuccessHandler((request, response, authentication) -> {
                             response.setStatus(200);
                             response.getWriter().write("Logout successful");
                         })
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
