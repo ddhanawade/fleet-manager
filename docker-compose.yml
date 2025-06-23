@@ -9,6 +9,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prd
       - SERVER_PORT=8081
+    ports:
+      - "8081:8081"  # Expose and map port 8081
     networks:
       - backend-network
 
