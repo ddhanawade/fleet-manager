@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+version: "3.8"
+
 services:
   fleet-manager:
     build:
@@ -8,23 +9,9 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prd
       - SERVER_PORT=8081
-=======
-version: '3.8'
-
-services:
-  fleet-manager:
-    build:
-      context: .
-      dockerfile: Dockerfile
->>>>>>> refs/remotes/origin/develop
-    ports:
-      - "8081:8081"
     networks:
       - backend-network
-<<<<<<< HEAD
 
-=======
->>>>>>> refs/remotes/origin/develop
 networks:
   backend-network:
     driver: bridge
