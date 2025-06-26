@@ -87,13 +87,12 @@ public class SecurityConfig {
                     var corsConfig = new org.springframework.web.cors.CorsConfiguration();
                     corsConfig.setAllowedOrigins(corsProperties.getAllowedOrigins());
                     corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type", "*"));
+                    corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type", "*")); // Allow Authorization header
                     corsConfig.setAllowCredentials(true);
                     return corsConfig;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register", "/auth/*", "/start-async-task").permitAll() // Allow specific endpoints
-                        .requestMatchers("/auth/**").authenticated() // Authenticate other /auth endpoints
+                        .requestMatchers("/auth/login", "/auth/register", "/auth/**", "/start-async-task").permitAll() // Public endpoints
                         .anyRequest().authenticated() // Secure all other endpoints
                 )
                 .logout(logout -> logout
