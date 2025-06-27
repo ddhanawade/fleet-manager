@@ -219,7 +219,12 @@ public class VehicleService {
     public Map<String, Map<String, Long>> getAgeCountByModel() {
         List<Vehicle> vehicles = vehicleRepository.findAll();
 
-        return vehicles.stream()
+        // Filter out vehicles with null models
+        List<Vehicle> validVehicles = vehicles.stream()
+                .filter(vehicle -> vehicle.getModel() != null)
+                .collect(Collectors.toList());
+
+        return validVehicles.stream()
                 .collect(Collectors.groupingBy(
                         Vehicle::getModel, // Group by model
                         Collectors.groupingBy(vehicle -> {
@@ -244,8 +249,13 @@ public class VehicleService {
     public List<VehicleDTO> getAllUniqueVehicles() {
         List<Vehicle> vehicles = vehicleRepository.findAll();
 
+        // Filter out vehicles with null models
+        List<Vehicle> validVehicles = vehicles.stream()
+                .filter(vehicle -> vehicle.getModel() != null)
+                .collect(Collectors.toList());
+
         // Group vehicles by model and calculate age counts
-        Map<String, Map<String, Long>> ageCountsByModel = vehicles.stream()
+        Map<String, Map<String, Long>> ageCountsByModel = validVehicles.stream()
                 .collect(Collectors.groupingBy(
                         Vehicle::getModel,
                         Collectors.groupingBy(vehicle -> {
@@ -263,7 +273,7 @@ public class VehicleService {
                 ));
 
         // Map unique vehicles to DTOs and set age counts
-        return vehicles.stream()
+        return validVehicles.stream()
                 .filter(distinctByKey(Vehicle::getModel)) // Unique by model
                 .map(vehicle -> {
                     VehicleDTO dto = vehicleMapper.toDTO(vehicle);
