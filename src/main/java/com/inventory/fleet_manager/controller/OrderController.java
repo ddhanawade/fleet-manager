@@ -49,9 +49,16 @@ public class OrderController {
     }
 
     @GetMapping("/vehicle/{id}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByVehicleId(@PathVariable Long id){
-        List<OrderDTO> orderList = orderService.getOrdersByVehicleId(id);
-        return new ResponseEntity<>(orderList, HttpStatus.OK);
+    public ResponseEntity<?> getOrdersByVehicleId(@PathVariable Long id) {
+        try {
+            List<OrderDTO> orderList = orderService.getOrdersByVehicleId(id);
+            if (orderList.isEmpty()) {
+                return new ResponseEntity<>("No orders found for the given vehicle ID.", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(orderList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An error occurred while fetching orders: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
