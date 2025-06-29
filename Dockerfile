@@ -2,12 +2,16 @@
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy the Maven project files
+# Copy only the pom.xml first to leverage Docker's layer caching
 COPY pom.xml ./
-RUN mvn dependency:go-offline
 
-# Copy the source code and build the application
+# Download dependencies without building the project
+RUN mvn dependency:go-offline -B
+
+# Copy the source code
 COPY src ./src
+
+# Build the application
 RUN mvn package -DskipTests
 
 # Use a lightweight OpenJDK image to run the application
@@ -19,10 +23,6 @@ COPY --from=build /app/target/*.jar app.jar
 
 # Expose the port your Spring Boot application runs on
 EXPOSE 8081
-
-# Add a health check (optional)
-HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:8081/actuator/health || exit 1
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
