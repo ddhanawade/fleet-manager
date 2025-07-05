@@ -23,8 +23,8 @@ public class VehicleAgeScheduler {
     }
 
     // Schedule the task to run every 24 hours
-    @Scheduled(cron = "0 * * * * ?") // Runs every minute
-//    @Scheduled(cron = "0 0 0 * * ?") // Runs at midnight every day
+//    @Scheduled(cron = "0 * * * * ?") // Runs every minute
+    @Scheduled(cron = "0 0 0 * * ?") // Runs at midnight every day
     public void updateVehicleAgesAndInterests() {
         log.info("Starting vehicle age update process on: {}", java.time.LocalDate.now());
         boolean ageUpdateSuccessful = true;
