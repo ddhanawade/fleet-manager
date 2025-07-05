@@ -348,17 +348,23 @@ public class VehicleService {
         } else if (field.getType().equals(Boolean.class)) {
             return Boolean.parseBoolean(value);
         } else if (field.getType().equals(Date.class)) {
-            List<String> dateFormats = Arrays.asList("yyyy-MM-dd", "MM/dd/yyyy", "dd-MM-yyyy", "dd/MM/yyyy","dd/MM/yy");
+            List<String> dateFormats = Arrays.asList("yyyy-MM-dd", "MM/dd/yyyy", "dd-MM-yyyy", "dd/MM/yyyy", "dd/MM/yy");
             for (String format : dateFormats) {
                 try {
                     logger.info("Attempting to parse value '{}' with format '{}'", value, format);
                     SimpleDateFormat dateFormat = new SimpleDateFormat(format);
                     dateFormat.setLenient(false); // Strict parsing
                     Date parsedDate = dateFormat.parse(value.trim());
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(parsedDate);
+                    int year = calendar.get(Calendar.YEAR);
+                    if (year < 100) { // Handle two-digit year
+                        calendar.set(Calendar.YEAR, year + 2000); // Adjust to 21st century
+                        parsedDate = calendar.getTime();
+                    }
                     logger.info("Successfully parsed value '{}' as date '{}'", value, parsedDate);
-                    // Convert to the desired format (e.g., yyyy-MM-dd)
-                    SimpleDateFormat desiredFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    return desiredFormat.parse(desiredFormat.format(parsedDate));
+                    return parsedDate;
                 } catch (Exception ignored) {
                     logger.warn("Failed to parse value '{}' with format '{}'", value, format);
                 }
