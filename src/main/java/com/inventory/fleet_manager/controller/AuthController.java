@@ -4,9 +4,13 @@ import com.inventory.fleet_manager.model.User;
 import com.inventory.fleet_manager.repository.UserRepository;
 import com.inventory.fleet_manager.service.EmailService;
 import com.inventory.fleet_manager.service.UserDetailsServiceImpl;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -69,10 +73,7 @@ public class AuthController {
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
-        if (tokenBlacklist.contains(token)) {
-            throw new RuntimeException("Token is already blacklisted");
-        }
-        tokenBlacklist.add(token);
+        tokenBlacklist.add(token); // Add token to blacklist
         return "Logout successful";
     }
 
@@ -234,5 +235,15 @@ public class AuthController {
         return Map.of("message", "Password reset successful");
     }
 
+    @PostMapping("/auth/refresh")
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String token) {
+        try {
+            Claims claims = jwtUtil.extractAllClaims(token.substring(7));
+            String newToken = jwtUtil.generateToken(claims.getSubject());
+            return ResponseEntity.ok(newToken);
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token expired. Please log in again.");
+        }
+    }
 
 }

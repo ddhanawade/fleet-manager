@@ -1,6 +1,7 @@
 package com.inventory.fleet_manager.authService;
 
 import io.jsonwebtoken.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +34,19 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new RuntimeException("Token has expired. Please refresh your token.");
+            // Logic to remove token and logout
+            logoutUser(); // Custom method to handle logout
+            throw new RuntimeException("Token has expired. User has been logged out.");
         } catch (JwtException e) {
             throw new RuntimeException("Invalid token.");
         }
+    }
+
+    private void logoutUser() {
+        // Implement token removal and logout logic here
+        // Example: Clear session or security context
+        SecurityContextHolder.clearContext();
+        // Redirect user to login page or logout endpoint
     }
 
     private Boolean isTokenExpired(String token) {
