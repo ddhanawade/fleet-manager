@@ -12,16 +12,16 @@ import java.time.temporal.ChronoUnit;
 @Slf4j
 @Component
 public class VehicleUtils {
-    public static String calculateInterest(String invoiceValue, Integer age) {
-        if (invoiceValue == null || age == null || invoiceValue.isEmpty() || age < 0) {
+    public static String calculateInterest(String invoiceValue, Integer days) {
+        if (invoiceValue == null || days == null || invoiceValue.isEmpty() || days < 0) {
             return "Invalid input";
         }
-
         try {
             double value = Double.parseDouble(invoiceValue);
-            double interestRate = 0.05; // Example interest rate of 5%
-            double interest = value * interestRate * age;
-            return String.format("%.2f", interest);
+            double interestRate = 0.095; // 9.5%
+            double interest = value * interestRate * days / 3650;
+            long roundedInterest = Math.round(interest); // Round to nearest whole number
+            return String.valueOf(roundedInterest);
         } catch (NumberFormatException e) {
             return "Invalid invoice value";
         }
