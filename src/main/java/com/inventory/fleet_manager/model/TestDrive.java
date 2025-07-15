@@ -1,6 +1,5 @@
 package com.inventory.fleet_manager.model;
 
-import com.inventory.fleet_manager.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +13,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Vehicle {
+public class TestDrive {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,20 +28,11 @@ public class Vehicle {
     private String engineNumber;
     private String keyNumber;
     private String location;
-    @Enumerated(EnumType.STRING)
-    private status vehicleStatus;
+    private String vehicleType;
     private Date receivedDate;
-    private Date invoiceDate;
-    private String invoiceNumber;
     private String purchaseDealer;
     private String manufactureDate;
-    private String suffix;
-    private String invoiceValue;
-    private  Integer age;
-    private String interest;
     private String remarks;
-    @Enumerated(EnumType.STRING)
-    private dmsStatus dmsStatus;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

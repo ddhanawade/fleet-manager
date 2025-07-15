@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -45,7 +46,7 @@ public class VehicleUtils {
 
             return (int) ChronoUnit.DAYS.between(invoiceDate, LocalDate.now());
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Error parsing received date calculateVehicleAge: " + invoiceDateString, e);
+            throw new IllegalArgumentException("Error parsing invoice date calculateVehicleAge: " + invoiceDateString, e);
         }
     }
 
@@ -62,6 +63,21 @@ public class VehicleUtils {
             return extractedDate; // Return as is if no 'T' present
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Error parsing received date: " + receivedDate, e);
+        }
+    }
+
+    public static String convertInvoiceDate(String invoiceDate) {
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+
+        try {
+            // Parse the input date
+            ZonedDateTime zonedDateTime = ZonedDateTime.parse(invoiceDate, inputFormatter);
+
+            // Format the date into the desired format
+            return zonedDateTime.format(outputFormatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Error parsing invoice date: " + invoiceDate, e);
         }
     }
 }

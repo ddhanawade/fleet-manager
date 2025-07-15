@@ -1,8 +1,7 @@
 package com.inventory.fleet_manager.controller;
 
-import com.inventory.fleet_manager.dto.AnalyticsResponse;
-import com.inventory.fleet_manager.dto.MonthlySalesRequest;
-import com.inventory.fleet_manager.dto.MonthlySalesResponse;
+import com.inventory.fleet_manager.dto.*;
+import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.service.AnalyticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -52,5 +51,16 @@ public class AnalyticsController {
         }
 
         return analyticsService.getTopModelSold(filters);
+    }
+
+    @PostMapping("/monthly-vehicle-purchased")
+    public List<MonthlyPurchaseResponse> getMonthlyVehiclePurchased(@RequestBody MonthlyPurchasedRequest request) {
+        if (request.getStartDate() == null || request.getEndDate() == null) {
+            throw new IllegalArgumentException("Start date and end date are required parameters");
+        }
+        if (request.getStartDate().isAfter(request.getEndDate())) {
+            throw new IllegalArgumentException("Start date must be less than end date");
+        }
+        return analyticsService.getVehiclesPurchased(request);
     }
 }

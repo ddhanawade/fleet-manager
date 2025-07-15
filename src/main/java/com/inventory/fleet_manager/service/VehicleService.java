@@ -1,24 +1,22 @@
 package com.inventory.fleet_manager.service;
 
-import com.inventory.fleet_manager.dto.ModelInfoDTO;
 import com.inventory.fleet_manager.dto.VehicleDTO;
 import com.inventory.fleet_manager.dto.VehicleOrderResponse;
+import com.inventory.fleet_manager.exception.ConstraintViolationException;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
+import com.inventory.fleet_manager.model.TestDrive;
 import com.inventory.fleet_manager.model.Vehicle;
+import com.inventory.fleet_manager.repository.TestDriveRepository;
 import com.inventory.fleet_manager.repository.VehicleRepository;
 import com.inventory.fleet_manager.utility.VehicleUtils;
 import com.opencsv.CSVReader;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,13 +42,16 @@ public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
 
+    private final TestDriveRepository testDriveRepository;
+
     private final VehicleMapper vehicleMapper;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()); // Custom thread pool
 
-    public VehicleService(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper, VehicleUtils vehicleUtils) {
+    public VehicleService(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper, TestDriveRepository testDriveRepository) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleMapper = vehicleMapper;
+        this.testDriveRepository = testDriveRepository;
     }
     /**
      * Retrieves all vehicles from the repository, processes them asynchronously,
@@ -118,8 +119,15 @@ public class VehicleService {
     }
 
     public VehicleDTO createVehicle(VehicleDTO vehicleDTO) {
-        Vehicle savedVehicle = vehicleRepository.save(vehicleMapper.toEntity(vehicleDTO));
-        return vehicleMapper.toDTO(savedVehicle);
+        try {
+            Vehicle savedVehicle = vehicleRepository.save(vehicleMapper.toEntity(vehicleDTO));
+            return vehicleMapper.toDTO(savedVehicle);
+        } catch (DataIntegrityViolationException ex) {
+            if (ex.getMessage() != null && ex.getMessage().contains("chassisNumber")) {
+                throw new ConstraintViolationException("A vehicle with the same chassis number already exists.");
+            }
+            throw new RuntimeException("An error occurred while saving the vehicle.", ex);
+        }
     }
 
     public VehicleDTO updateVehicle(Long id, VehicleDTO vehicleDTO) throws VehicleNotFoundException {
@@ -127,11 +135,22 @@ public class VehicleService {
             throw new IllegalArgumentException("VehicleDTO cannot be null");
         }
 
-        // Retrieve the existing vehicle
         Vehicle existingVehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with id: " + id));
 
-        // Update only the fields provided in the DTO
+
+        if (vehicleDTO.getInvoiceDate() != null &&
+                !vehicleDTO.getInvoiceDate().equals(existingVehicle.getInvoiceDate())) {
+
+            String invoiceDate = VehicleUtils.convertInvoiceDate(String.valueOf(vehicleDTO.getInvoiceDate()));
+            Integer newAge = VehicleUtils.calculateVehicleAge(invoiceDate);
+            vehicleDTO.setAge(newAge);
+
+            if (vehicleDTO.getInvoiceValue() != null) {
+                String newInterest = VehicleUtils.calculateInterest(vehicleDTO.getInvoiceValue(), newAge);
+                vehicleDTO.setInterest(newInterest);
+            }
+        }
         if (vehicleDTO.getMake() != null && !vehicleDTO.getMake().equals(existingVehicle.getMake())) {
             existingVehicle.setMake(vehicleDTO.getMake());
         }
@@ -201,12 +220,16 @@ public class VehicleService {
         if (vehicleDTO.getInterest() != null && !vehicleDTO.getInterest().equals(existingVehicle.getInterest())) {
             existingVehicle.setInterest(vehicleDTO.getInterest());
         }
+        try {
+            Vehicle updatedVehicle = vehicleRepository.save(existingVehicle);
+            return vehicleMapper.toDTO(updatedVehicle);
+        } catch (DataIntegrityViolationException ex) {
+            if (ex.getMessage() != null && ex.getMessage().contains("chassisNumber")) {
+                throw new ConstraintViolationException("A vehicle with the same chassis number already exists.");
+            }
+            throw new RuntimeException("An error occurred while updating the vehicle.", ex);
+        }
 
-        // Save the updated entity
-        Vehicle updatedVehicle = vehicleRepository.save(existingVehicle);
-
-        // Map the updated entity back to DTO
-        return vehicleMapper.toDTO(updatedVehicle);
     }
 
     public void deleteVehicle(Long id) throws VehicleNotFoundException {
@@ -413,5 +436,39 @@ public class VehicleService {
         } finally {
             log.info("Exiting getVehicleAndOrderDetailsByModel");
         }
+    }
+
+    public void saveTestDrivesFromFile(MultipartFile file) throws Exception {
+        String fileName = file.getOriginalFilename();
+        if (fileName == null || fileName.isBlank() || !fileName.endsWith(".csv")) {
+            throw new IllegalArgumentException("Invalid file format. Please upload a CSV file.");
+        }
+
+        List<TestDrive> testDrives = new ArrayList<>();
+
+        try (InputStream inputStream = file.getInputStream();
+             CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
+
+            String[] headers = csvReader.readNext();
+            if (headers == null) {
+                throw new IllegalArgumentException("The file is empty or missing headers.");
+            }
+
+            String[] row;
+            while ((row = csvReader.readNext()) != null) {
+                TestDrive testDrive = new TestDrive();
+                for (int i = 0; i < headers.length; i++) {
+                    String header = headers[i];
+                    String value = row[i];
+
+                    Field field = TestDrive.class.getDeclaredField(header);
+                    field.setAccessible(true);
+                    field.set(testDrive, parseValue(field, value));
+                }
+                testDrives.add(testDrive);
+            }
+        }
+
+        testDriveRepository.saveAll(testDrives);
     }
 }

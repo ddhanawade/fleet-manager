@@ -25,7 +25,7 @@ public class MonthlySalesResponse {
     private String customerName;
     private String phoneNumber;
     private String leadName;
-    private  String salesPersonName;
+    private String salesPersonName;
     private LocalDate orderDate;
     private LocalDate deliveryDate;
     private String financerName;

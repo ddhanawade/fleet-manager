@@ -1,7 +1,6 @@
 package com.inventory.fleet_manager.model;
 
 import com.inventory.fleet_manager.enums.orderStatus;
-import com.inventory.fleet_manager.enums.status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +22,7 @@ public class Order {
     private String leadName;
     private String salesPersonName;
     private Date orderDate;
+    private String dealAmount;
     private Date deliveryDate;
     private String financerName;
     private String financeType;

@@ -91,4 +91,14 @@ public class VehicleController {
         List<ModelInfoDTO> modelInfoList = modelService.getAllModelInfo();
         return new ResponseEntity<>(modelInfoList, HttpStatus.OK);
     }
+
+    @PostMapping("/testdrives/upload")
+    public ResponseEntity<String> uploadTestDriveData(@RequestParam("file") MultipartFile file) {
+        try {
+            vehicleService.saveTestDrivesFromFile(file);
+            return ResponseEntity.ok("Test drive data uploaded successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error uploading test drive data: " + e.getMessage());
+        }
+    }
 }

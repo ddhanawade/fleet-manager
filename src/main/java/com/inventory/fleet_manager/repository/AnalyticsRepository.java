@@ -1,16 +1,15 @@
 package com.inventory.fleet_manager.repository;
 
 import com.inventory.fleet_manager.dto.AnalyticsResponse;
+import com.inventory.fleet_manager.dto.MonthlyPurchaseResponse;
 import com.inventory.fleet_manager.dto.MonthlySalesResponse;
 import com.inventory.fleet_manager.mapper.ResultMapper;
+import com.inventory.fleet_manager.model.Vehicle;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +62,12 @@ public class AnalyticsRepository {
         if (isValidFilter(filters, "city")) {
             queryBuilder.append("AND v.location = :city ");
         }
+        if (isValidFilter(filters, "leadName")) {
+            queryBuilder.append("AND o.lead_name = :leadName ");
+        }
+        if (isValidFilter(filters, "salesPersonName")) {
+            queryBuilder.append("AND o.sales_person_name = :salesPersonName ");
+        }
     }
 
     private void setQueryParameters(Query query, Map<String, String> filters) {
@@ -77,6 +82,12 @@ public class AnalyticsRepository {
         }
         if (isValidFilter(filters, "city")) {
             query.setParameter("city", filters.get("city"));
+        }
+        if (isValidFilter(filters, "leadName")) {
+            query.setParameter("leadName", filters.get("leadName"));
+        }
+        if (isValidFilter(filters, "salesPersonName")) {
+            query.setParameter("salesPersonName", filters.get("salesPersonName"));
         }
     }
 
@@ -129,5 +140,27 @@ public class AnalyticsRepository {
         }
 
         return new AnalyticsResponse(nativeQuery.getResultList());
+    }
+
+    public List<MonthlyPurchaseResponse> fetchVehiclesPurchased(Map<String, String> filters) {
+        StringBuilder queryBuilder = new StringBuilder(
+                "SELECT v.make AS make, v.model AS model, v.purchase_dealer AS purchaseDealer, " +
+                        "v.chassis_number AS chassisNumber, v.engine_number AS engineNumber, " +
+                        "v.key_number AS keyNumber, v.location AS location, v.invoice_value AS invoiceValue, " +
+                        "v.interest AS interest, v.vehicle_status AS status, v.invoice_date AS invoiceDate " +
+                        "FROM vehicle v " +
+                        "WHERE DATE(v.invoice_date) BETWEEN :startDate AND :endDate " +
+                        "AND v.vehicle_status IN ('FREE', 'AVAILABLE') "
+        );
+        addOptionalFilters(queryBuilder, filters);
+        Query nativeQuery = entityManager.createNativeQuery(queryBuilder.toString());
+        setQueryParameters(nativeQuery, filters);
+
+        List<Object[]> results = nativeQuery.getResultList();
+        String[] columnAliases = {
+                "make", "model", "purchaseDealer", "chassisNumber", "engineNumber", "keyNumber", "location",
+                "invoiceValue", "interest", "status", "invoiceDate"
+        };
+        return ResultMapper.mapToDTOList(results, columnAliases, MonthlyPurchaseResponse.class);
     }
 }
