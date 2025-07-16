@@ -45,8 +45,12 @@ public class Vehicle {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    private String createdBy;
+
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    private String updatedBy;
 
     @PrePersist
     public void onPrePersist() {

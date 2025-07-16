@@ -1,6 +1,6 @@
 package com.inventory.fleet_manager.enums;
 
-public enum dmsStatus {
+public enum DmsStatus {
     FRESH,
     WATER
 }

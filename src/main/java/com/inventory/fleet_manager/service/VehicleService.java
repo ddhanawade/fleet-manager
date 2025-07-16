@@ -1,11 +1,13 @@
 package com.inventory.fleet_manager.service;
 
+import com.inventory.fleet_manager.configuration.LoggedInUserHolder;
 import com.inventory.fleet_manager.dto.VehicleDTO;
 import com.inventory.fleet_manager.dto.VehicleOrderResponse;
 import com.inventory.fleet_manager.exception.ConstraintViolationException;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.TestDrive;
+import com.inventory.fleet_manager.model.User;
 import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.repository.TestDriveRepository;
 import com.inventory.fleet_manager.repository.VehicleRepository;
@@ -46,13 +48,18 @@ public class VehicleService {
 
     private final VehicleMapper vehicleMapper;
 
+    private final UserDetailsServiceImpl userDetailsService;
+
     private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()); // Custom thread pool
 
-    public VehicleService(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper, TestDriveRepository testDriveRepository) {
+    public VehicleService(VehicleRepository vehicleRepository, VehicleMapper vehicleMapper, TestDriveRepository testDriveRepository, UserDetailsServiceImpl userDetailsService, UserDetailsServiceImpl userDetailsService1) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleMapper = vehicleMapper;
         this.testDriveRepository = testDriveRepository;
+        this.userDetailsService = userDetailsService1;
     }
+
+
     /**
      * Retrieves all vehicles from the repository, processes them asynchronously,
      * and returns a list of VehicleDTOs with calculated ages.
@@ -62,8 +69,10 @@ public class VehicleService {
 
     public List<VehicleDTO> getAllVehicles() {
         List<Vehicle> vehicles = vehicleRepository.findAll();
+        if (vehicles.isEmpty()) {
+            return Collections.emptyList(); // Return empty list if no vehicles found
+        }
 
-        // Process each vehicle asynchronously with exception handling
         List<CompletableFuture<VehicleDTO>> futures = vehicles.stream()
                 .map(vehicle -> CompletableFuture.supplyAsync(() -> {
                             VehicleDTO dto = vehicleMapper.toDTO(vehicle); // Ensure vehicleMapper is thread-safe
@@ -130,6 +139,8 @@ public class VehicleService {
                     vehicleDTO.setInterest(newInterest);
                 }
             }
+            vehicleDTO.setCreatedBy(userDetailsService.getLoggedInUsername());
+            vehicleDTO.setLocation(vehicleDTO.getLocation().toUpperCase());
             Vehicle savedVehicle = vehicleRepository.save(vehicleMapper.toEntity(vehicleDTO));
             return vehicleMapper.toDTO(savedVehicle);
         } catch (DataIntegrityViolationException ex) {
@@ -144,7 +155,7 @@ public class VehicleService {
         if (vehicleDTO == null) {
             throw new IllegalArgumentException("VehicleDTO cannot be null");
         }
-
+        String loggedInUser = userDetailsService.getLoggedInUsername();
         Vehicle existingVehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found with id: " + id));
 
@@ -180,7 +191,7 @@ public class VehicleService {
             existingVehicle.setInteriorColor(vehicleDTO.getInteriorColor());
         }
         if (vehicleDTO.getLocation() != null && !vehicleDTO.getLocation().equals(existingVehicle.getLocation())) {
-            existingVehicle.setLocation(vehicleDTO.getLocation());
+            existingVehicle.setLocation(vehicleDTO.getLocation().toUpperCase());
         }
         if (vehicleDTO.getVehicleStatus() != null) {
             try {
@@ -234,6 +245,7 @@ public class VehicleService {
             existingVehicle.setRemarks(vehicleDTO.getRemarks());
         }
         try {
+            existingVehicle.setUpdatedBy(loggedInUser);
             Vehicle updatedVehicle = vehicleRepository.save(existingVehicle);
             return vehicleMapper.toDTO(updatedVehicle);
         } catch (DataIntegrityViolationException ex) {
@@ -325,8 +337,9 @@ public class VehicleService {
     }
 
     public void saveVehiclesFromFile(MultipartFile file) throws Exception {
+        String loggedInUser = userDetailsService.getLoggedInUsername();
         String fileName = file.getOriginalFilename();
-        if (fileName.isBlank()  || !fileName.endsWith(".csv")) {
+        if (fileName.isBlank() || !fileName.endsWith(".csv")) {
             throw new IllegalArgumentException("Invalid file format. Please upload a CSV file.");
         }
 
@@ -350,8 +363,15 @@ public class VehicleService {
 
                     Field field = Vehicle.class.getDeclaredField(header);
                     field.setAccessible(true);
-                    field.set(vehicle, parseValue(field, value));
+
+                    // Special handling for the "location" field
+                    if ("location".equalsIgnoreCase(header)) {
+                        field.set(vehicle, value != null && !value.isBlank() ? value.toUpperCase() : null);
+                    } else {
+                        field.set(vehicle, parseValue(field, value));
+                    }
                 }
+                vehicle.setCreatedBy(loggedInUser); // Set createdBy to logged-in user
                 vehicles.add(vehicle);
             }
         }
@@ -462,7 +482,7 @@ public class VehicleService {
         try (InputStream inputStream = file.getInputStream();
              CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
 
-            String[] headers = csvReader.readNext();
+            String[] headers = csvReader.readNext(); // Read header row
             if (headers == null) {
                 throw new IllegalArgumentException("The file is empty or missing headers.");
             }
@@ -474,14 +494,42 @@ public class VehicleService {
                     String header = headers[i];
                     String value = row[i];
 
-                    Field field = TestDrive.class.getDeclaredField(header);
-                    field.setAccessible(true);
-                    field.set(testDrive, parseValue(field, value));
+                    try {
+                        Field field = TestDrive.class.getDeclaredField(header);
+                        field.setAccessible(true);
+                        field.set(testDrive, parseValue(field, value));
+                    } catch (NoSuchFieldException e) {
+                        // If the header does not match any field, set the value to null
+                        log.warn("Unmatched column '{}' in CSV file. Setting to null.", header);
+                    }
                 }
                 testDrives.add(testDrive);
             }
         }
 
         testDriveRepository.saveAll(testDrives);
+    }
+
+    public List<TestDrive> getAllTestDrives() {
+        List<TestDrive> testDrives = testDriveRepository.findAll();
+        if (testDrives.isEmpty()) {
+            return Collections.emptyList(); // Return empty list if no test drives found
+        }
+        return testDrives.stream()
+                .map(testDrive -> {
+                    TestDrive dto = new TestDrive();
+                    dto.setId(testDrive.getId());
+                    dto.setMake(testDrive.getMake());
+                    dto.setModel(testDrive.getModel());
+                    dto.setChassisNumber(testDrive.getChassisNumber());
+                    dto.setKeyNumber(testDrive.getKeyNumber());
+                    dto.setEngineNumber(testDrive.getEngineNumber());
+                    dto.setExteriorColor(testDrive.getExteriorColor());
+                    dto.setInteriorColor(testDrive.getInteriorColor());
+                    dto.setGrade(testDrive.getGrade());
+                    dto.setLocation(testDrive.getLocation() != null ? testDrive.getLocation().toUpperCase() : null);
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }

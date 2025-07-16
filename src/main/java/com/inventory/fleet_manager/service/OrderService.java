@@ -1,7 +1,7 @@
 package com.inventory.fleet_manager.service;
 
 import com.inventory.fleet_manager.dto.OrderDTO;
-import com.inventory.fleet_manager.enums.dmsStatus;
+import com.inventory.fleet_manager.enums.DmsStatus;
 import com.inventory.fleet_manager.enums.orderStatus;
 import com.inventory.fleet_manager.mapper.OrderMapper;
 import com.inventory.fleet_manager.model.Order;
@@ -22,12 +22,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final VehicleRepository vehicleRepository;
+    private final UserDetailsServiceImpl userDetailsService;
 
     public OrderService(OrderRepository orderRepository, OrderMapper orderMapper,
-                        VehicleRepository vehicleRepository) {
+                        VehicleRepository vehicleRepository, UserDetailsServiceImpl userDetailsService) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.vehicleRepository = vehicleRepository;
+        this.userDetailsService = userDetailsService;
     }
 
     // Add methods to handle business logic related to orders
@@ -41,13 +43,14 @@ public class OrderService {
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = orderMapper.toEntity(orderDTO);
-
+        String loggedInUser = userDetailsService.getLoggedInUsername();
         order.setOrderDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
         order.setCreatedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
 
         Vehicle vehicle = vehicleRepository.findById(orderDTO.getVehicleId())
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
         vehicle.setVehicleStatus(orderDTO.getVehicleStatus());
+        vehicle.setCreatedBy(loggedInUser);
         vehicleRepository.save(vehicle);
 
         Order savedOrder = orderRepository.save(order);
@@ -97,7 +100,7 @@ public class OrderService {
         }
         if (orderDTO.getDmsStatus() != null && !orderDTO.getDmsStatus().name().isBlank()) {
             try {
-                order.setDmsStatus(dmsStatus.valueOf(orderDTO.getDmsStatus().name()));
+                order.setDmsStatus(DmsStatus.valueOf(orderDTO.getDmsStatus().name()));
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Invalid DMS status value: " + orderDTO.getDmsStatus());
             }
@@ -109,6 +112,7 @@ public class OrderService {
         Vehicle vehicle = vehicleRepository.findById(orderDTO.getVehicleId())
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
         vehicle.setVehicleStatus(orderDTO.getVehicleStatus());
+        vehicle.setUpdatedBy(userDetailsService.getLoggedInUsername());
         vehicleRepository.save(vehicle);
 
         return orderMapper.toDTO(updatedOrder);

@@ -21,13 +21,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpec
             "v.suffix, v.invoiceValue, v.age, v.interest, " +
             "o.orderId, o.customerName, o.phoneNumber, o.leadName, o.salesPersonName, " +
             "o.orderDate, o.deliveryDate, o.financerName, o.financeType, o.remarks, " +
-            "o.createdAt, o.updatedAt, o.createdBy, o.updatedBy, o.orderStatus) " +
+            "o.createdAt, o.updatedAt, o.createdBy, o.updatedBy, o.orderStatus, " +
+            "o.dealAmount, o.dmsStatus) " +
             "FROM Vehicle v LEFT JOIN Order o ON v.id = o.vehicleId WHERE v.model = :model")
     List<VehicleOrderResponse> findVehicleAndOrderDetailsByModel(@Param("model") String model);
-
-    @Query(value = """
-        SELECT id, make, model 
-        FROM model_info
-        """, nativeQuery = true)
-    List<ModelInfoDTO> findAllModelInfo();
 }

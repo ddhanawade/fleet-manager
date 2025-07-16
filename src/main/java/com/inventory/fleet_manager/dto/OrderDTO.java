@@ -34,7 +34,7 @@ public class OrderDTO {
     @Enumerated(EnumType.STRING)
     private orderStatus orderStatus;
     @Enumerated(EnumType.STRING)
-    private dmsStatus dmsStatus;
+    private DmsStatus dmsStatus;
     private String dealAmount;
     @Enumerated(EnumType.STRING)
     private status vehicleStatus;

@@ -44,4 +44,6 @@ public class VehicleDTO {
     private Long between30And60DaysCount;
     private Long greaterThan60DaysCount;
     private String remarks;
+    private String createdBy;
+    private String updatedBy;
 }

@@ -6,6 +6,7 @@ import com.inventory.fleet_manager.dto.VehicleOrderResponse;
 import com.inventory.fleet_manager.enums.status;
 import com.inventory.fleet_manager.exception.VehicleNotFoundException;
 import com.inventory.fleet_manager.mapper.VehicleMapper;
+import com.inventory.fleet_manager.model.TestDrive;
 import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.service.ModelService;
 import com.inventory.fleet_manager.service.VehicleService;
@@ -100,5 +101,10 @@ public class VehicleController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error uploading test drive data: " + e.getMessage());
         }
+    }
+    @GetMapping("/testDriveVehicles")
+    public ResponseEntity<List<TestDrive>> getAllTestDrives() {
+        List<TestDrive> testDrives = vehicleService.getAllTestDrives();
+        return new ResponseEntity<>(testDrives, HttpStatus.OK);
     }
 }

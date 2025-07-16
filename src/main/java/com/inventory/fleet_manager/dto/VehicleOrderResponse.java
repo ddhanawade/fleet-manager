@@ -1,5 +1,6 @@
 package com.inventory.fleet_manager.dto;
 
+import com.inventory.fleet_manager.enums.DmsStatus;
 import com.inventory.fleet_manager.enums.orderStatus;
 import com.inventory.fleet_manager.enums.status;
 import lombok.AllArgsConstructor;
@@ -50,4 +51,6 @@ public class VehicleOrderResponse {
     private String createdBy;
     private String updatedBy;
     private orderStatus orderStatus;
+    private String dealAmount;
+    private DmsStatus dmsStatus;
 }
