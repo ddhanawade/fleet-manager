@@ -1,13 +1,13 @@
 package com.inventory.fleet_manager.service;
 
 import com.inventory.fleet_manager.dto.OrderDTO;
+import com.inventory.fleet_manager.enums.dmsStatus;
 import com.inventory.fleet_manager.enums.orderStatus;
-import com.inventory.fleet_manager.enums.status;
 import com.inventory.fleet_manager.mapper.OrderMapper;
-import com.inventory.fleet_manager.mapper.VehicleMapper;
 import com.inventory.fleet_manager.model.Order;
 import com.inventory.fleet_manager.model.Vehicle;
 import com.inventory.fleet_manager.repository.OrderRepository;
+import com.inventory.fleet_manager.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,10 +21,13 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final VehicleRepository vehicleRepository;
 
-    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper) {
+    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper,
+                        VehicleRepository vehicleRepository) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
+        this.vehicleRepository = vehicleRepository;
     }
 
     // Add methods to handle business logic related to orders
@@ -41,6 +44,11 @@ public class OrderService {
 
         order.setOrderDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
         order.setCreatedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
+
+        Vehicle vehicle = vehicleRepository.findById(orderDTO.getVehicleId())
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+        vehicle.setVehicleStatus(orderDTO.getVehicleStatus());
+        vehicleRepository.save(vehicle);
 
         Order savedOrder = orderRepository.save(order);
         return orderMapper.toDTO(savedOrder);
@@ -84,9 +92,25 @@ public class OrderService {
         if (orderDTO.getDeliveryDate() != null ) {
             order.setDeliveryDate(orderDTO.getDeliveryDate());
         }
+        if (orderDTO.getDealAmount() != null && !orderDTO.getDealAmount().isBlank()) {
+            order.setDealAmount(orderDTO.getDealAmount());
+        }
+        if (orderDTO.getDmsStatus() != null && !orderDTO.getDmsStatus().name().isBlank()) {
+            try {
+                order.setDmsStatus(dmsStatus.valueOf(orderDTO.getDmsStatus().name()));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid DMS status value: " + orderDTO.getDmsStatus());
+            }
+        }
         order.setOrderId(id);
         order.setUpdatedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
         Order updatedOrder = orderRepository.save(order);
+
+        Vehicle vehicle = vehicleRepository.findById(orderDTO.getVehicleId())
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+        vehicle.setVehicleStatus(orderDTO.getVehicleStatus());
+        vehicleRepository.save(vehicle);
+
         return orderMapper.toDTO(updatedOrder);
     }
 

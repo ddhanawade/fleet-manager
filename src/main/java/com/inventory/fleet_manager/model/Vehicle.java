@@ -41,8 +41,6 @@ public class Vehicle {
     private  Integer age;
     private String interest;
     private String remarks;
-    @Enumerated(EnumType.STRING)
-    private dmsStatus dmsStatus;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

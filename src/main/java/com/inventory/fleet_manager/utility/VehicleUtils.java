@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 public class VehicleUtils {
     public static String calculateInterest(String invoiceValue, Integer days) {
         if (invoiceValue == null || days == null || invoiceValue.isEmpty() || days < 0) {
-            return "Invalid input";
+            return "0"; // Return zero interest for invalid input or negative days
         }
         try {
             double value = Double.parseDouble(invoiceValue);

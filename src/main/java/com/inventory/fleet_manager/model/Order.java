@@ -1,5 +1,6 @@
 package com.inventory.fleet_manager.model;
 
+import com.inventory.fleet_manager.enums.dmsStatus;
 import com.inventory.fleet_manager.enums.orderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,4 +35,6 @@ public class Order {
     private Long vehicleId;
     @Enumerated(EnumType.STRING)
     private orderStatus orderStatus;
+    @Enumerated(EnumType.STRING)
+    private dmsStatus dmsStatus;
 }

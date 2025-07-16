@@ -120,6 +120,16 @@ public class VehicleService {
 
     public VehicleDTO createVehicle(VehicleDTO vehicleDTO) {
         try {
+            if (vehicleDTO.getInvoiceDate() != null ) {
+                String invoiceDate = VehicleUtils.convertInvoiceDate(String.valueOf(vehicleDTO.getInvoiceDate()));
+                Integer newAge = VehicleUtils.calculateVehicleAge(invoiceDate);
+                vehicleDTO.setAge(newAge);
+
+                if (vehicleDTO.getInvoiceValue() != null) {
+                    String newInterest = VehicleUtils.calculateInterest(vehicleDTO.getInvoiceValue(), newAge);
+                    vehicleDTO.setInterest(newInterest);
+                }
+            }
             Vehicle savedVehicle = vehicleRepository.save(vehicleMapper.toEntity(vehicleDTO));
             return vehicleMapper.toDTO(savedVehicle);
         } catch (DataIntegrityViolationException ex) {
@@ -219,6 +229,9 @@ public class VehicleService {
         }
         if (vehicleDTO.getInterest() != null && !vehicleDTO.getInterest().equals(existingVehicle.getInterest())) {
             existingVehicle.setInterest(vehicleDTO.getInterest());
+        }
+        if (vehicleDTO.getRemarks() != null && !vehicleDTO.getRemarks().equals(existingVehicle.getRemarks())) {
+            existingVehicle.setRemarks(vehicleDTO.getRemarks());
         }
         try {
             Vehicle updatedVehicle = vehicleRepository.save(existingVehicle);

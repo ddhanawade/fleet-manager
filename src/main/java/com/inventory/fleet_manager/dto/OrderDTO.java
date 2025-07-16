@@ -1,7 +1,7 @@
 package com.inventory.fleet_manager.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inventory.fleet_manager.enums.orderStatus;
+import com.inventory.fleet_manager.enums.*;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -33,4 +33,10 @@ public class OrderDTO {
     private Long vehicleId;
     @Enumerated(EnumType.STRING)
     private orderStatus orderStatus;
+    @Enumerated(EnumType.STRING)
+    private dmsStatus dmsStatus;
+    private String dealAmount;
+    @Enumerated(EnumType.STRING)
+    private status vehicleStatus;
+
 }
